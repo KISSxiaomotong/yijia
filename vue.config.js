@@ -1,6 +1,20 @@
 const autoprefixer = require('autoprefixer');
 const pxtorem = require('postcss-pxtorem');
 module.exports = {
+    publicPath: process.env.NODE_ENV === "production" ? "./" : "/",
+    assetsDir: "./",
+    devServer: {
+        proxy: {
+            '/proxy/': {
+                'target': 'http://sbo.natapp1.cc', //天气接口地址
+                'secure': false, // false为http访问，true为https访问
+                'changeOrigin': true, // 跨域访问设置，true代表跨域
+                'pathRewrite': { // 路径改写规则
+                    '^/proxy': '' // 以/proxy/为开头的改写为''
+                }
+            }
+        }
+    },
     pages: {
         index: {
             // 入口文件
@@ -36,16 +50,6 @@ module.exports = {
     parallel: require('os').cpus().length > 1,
 
     pwa: {},
-
-    devServer: {
-        open: process.platform === 'darwin',
-        host: '0.0.0.0',
-        port: 8080,
-        https: false,
-        hotOnly: false,
-        proxy: null, // string | Object
-
-    },
 
     pluginOptions: {
         // ...
