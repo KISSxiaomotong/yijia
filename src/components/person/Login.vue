@@ -1,0 +1,101 @@
+<template>
+    <div id="login">
+        <div class="fork">
+            <img src="../../assets/images/person/fork.png">
+        </div>
+        <div class="content">
+            <h2>手机号码登录</h2>
+            <input type="text" placeholder="请输入你的手机号码" class="phone">
+            <input type="text" placeholder="请输入密码" class="password">
+            <router-link to="#">忘记密码？</router-link>
+        </div>
+        <div class="other">
+            <input type="button" value="确认">
+            <p class="p2">没有账号？<router-link to="#">去注册</router-link></p>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "Register",
+        data() {
+            return {
+                checked: false
+            };
+        }
+    }
+</script>
+
+<style scoped>
+    #login{
+        width: 570px;
+        height: 630px;
+        top: 300px;
+        left: 90px;
+        border-radius: 20px;
+        position: fixed;
+    }
+    .fork{
+        width: 570px;
+        height: 70px;
+    }
+    .fork>img{
+        width: 40px;
+        height: 40px;
+        float: right;
+        padding: 30px 30px 0 0;
+    }
+    .content{
+        padding: 0 36px 0 54px;
+    }
+    .content>h2{
+        font-size: 40px;
+    }
+    .content>input{
+        width: 460px;
+        height: 80px;
+        padding-left: 30px;
+        border-radius: 5px;
+        background-color: #f6f6f6;
+    }
+    .content>a{
+        display: block;
+        text-align: right;
+        font-size: 24px;
+        color: #888888;
+    }
+    input::-webkit-input-placeholder{
+        font-size: 26px;
+        color: #999999;
+    }
+    .phone{
+        margin: 40px 0 30px;
+    }
+    .password{
+        margin-bottom: 40px;
+    }
+    .other{
+        padding: 0 36px 0 54px;
+    }
+    .other>input{
+        width: 490px;
+        height: 80px;
+        font-size: 30px;
+        color: #ffffff;
+        border-radius: 5px;
+        margin-top: 30px;
+        background-color: #00c0eb;
+    }
+    .other>p{
+        font-size: 24px;
+        color: #999999;
+    }
+    .p2{
+        text-align: center;
+        padding: 42px 0;
+    }
+    .p2>a{
+        color: #01c0ec;
+    }
+</style>

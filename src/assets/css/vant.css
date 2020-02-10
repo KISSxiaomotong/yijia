@@ -1,0 +1,25 @@
+.van-dropdown-menu{
+    text-align: left;
+    height: 80px;
+}
+.van-dropdown-menu__title{
+    height: 36px;
+    line-height: 36px;
+    font-size: 26px;
+}
+.van-cell__title{
+    height: 36px;
+    line-height: 36px;
+    font-size: 26px;
+}
+.van-cell{
+    padding-left: 40px;
+}
+.van-progress{
+    height: 10px;
+}
+.van-progress__pivot{
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+}
