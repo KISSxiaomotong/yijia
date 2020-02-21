@@ -23,3 +23,10 @@
     height: 30px;
     border-radius: 30px;
 }
+.van-swipe-item{
+    color: #fff;
+    font-size: 20px;
+    line-height: 617px;
+    text-align: center;
+    background-color: #39a9ed;
+}

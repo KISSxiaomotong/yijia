@@ -77,7 +77,22 @@
 
 <script>
     export default {
-        name: "HouseDetail"
+        name: "HouseDetail",
+        data(){
+            return{
+                id:this.$route.params.id,
+                detail:{}
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('propertiesDynamic/selbyid', {"current":1,"num":10});
+                this.detail = res.data;
+            }
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 

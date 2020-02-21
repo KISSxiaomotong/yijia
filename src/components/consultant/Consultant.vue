@@ -8,26 +8,20 @@
         <div class="top"></div>
         <div class="middle">
             <div class="contact">
-                <img src="../../assets/images/material/avatar.jpg">
+                <img :src="detail.headPortrait">
                 <div>
-                    <h3>宝音图</h3>
-                    <p>内蒙古财经大学</p>
+                    <h3>{{detail.name}}</h3>
+                    <p>{{detail.university}}</p>
                 </div>
                 <input type="button" value="在线咨询">
             </div>
             <div class="desc">
-                <p>“热爱地产，珍惜客户，提供优质服务，我承诺我做到， 做专业地产人”</p>
+                <p>{{detail.slogan}}</p>
             </div>
         </div>
         <div class="bottom">
             <h2>基本信息</h2>
-            <div class="declaration">
-                <p>服务宣言：</p>
-                <p>“热爱地产，珍惜客户，提供优质服务，我承诺我做到， 做专业地产人”</p>
-            </div>
-            <div class="brief">
-                <p>本人简介：</p>
-                <p>本人成熟稳重经验丰富，贷款业务扎实，了解政策法规，合理规避高额费用。房源信息及时准确，规避风险远离骗局，为您甄选吉屋旺铺，助您生活事业节节高</p>
+            <div v-html="detail.personalInformation">
             </div>
         </div>
     </div>
@@ -35,7 +29,22 @@
 
 <script>
     export default {
-        name: "Consultant"
+        name: "Consultant",
+        data(){
+            return{
+                id:this.$route.query.id,
+                detail:{}
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('expert/selbyid',{"id":this.id});
+                this.detail = res.data.data;
+            }
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 
@@ -137,22 +146,7 @@
         padding: 48px 0 48px 28px;
         font-weight: bold;
     }
-    .declaration{
-        width: 634px;
-        padding: 0 28px;
-    }
-    .declaration>p{
-        font-size: 26px;
-        color: #555555;
-        line-height: 40px;
-    }
-    .brief{
-        width: 634px;
-        padding: 55px 28px;
-    }
-    .brief>p{
-        font-size: 26px;
-        color: #555555;
-        line-height: 40px;
+    .bottom >>> img{
+        width: 690px;
     }
 </style>

@@ -27,8 +27,8 @@
             </div>
         </div>
         <div class="area">
-            <h2>购房预算</h2>
-            <input type="text" placeholder="请填写区域">
+            <h2>购房区域</h2>
+            <input type="text" placeholder="请填写区域" v-model="region">
         </div>
         <div class="ideal">
             <h2>理想户型</h2>
@@ -38,15 +38,16 @@
         </div>
         <div class="phone">
             <h2>您的手机号码</h2>
-            <input type="text" placeholder="请输入你的手机号码">
+            <input type="text" placeholder="请输入你的手机号码" v-model="phone">
         </div>
         <div class="submit">
-            <input type="button" value="提交">
+            <input type="button" value="提交" @click="publish()">
         </div>
     </div>
 </template>
 
 <script>
+    import { Toast } from 'vant';
     export default {
         name: "help",
         data () {
@@ -63,7 +64,11 @@
                 current: 0,
                 apartment: [
                     '不限','一居','二居','三居','四居','五居及以上'
-                ]
+                ],
+                budget: '',
+                region: '',
+                shape: '',
+                phone: ''
             }
         },
         methods: {
@@ -74,7 +79,6 @@
                 return pos;
             },
             timeDown: function (e) { // 当鼠标指针移动到元素上方，并按下鼠标左键时
-                this.transTime = 0;
                 this.mousePos(e);
                 this.startX = this.pos.x;
                 this.locked = true;
@@ -110,9 +114,22 @@
                 }else{
                     this.nowNum = Math.ceil((num / this.dragWidth) * len) + "万";
                 }
+                this.budget = now;
             },
             change: function (index) {
                 this.current = index;
+                this.shape = this.apartment[index];
+            },
+            publish: async function (){
+                let res = await this.post('findHouse/add', {
+                    "budget":this.budget,"region":this.region,
+                    "shape":this.shape,"phone":this.phone
+                });
+                if(res.data.code === 200){
+                    Toast("提交成功！");
+                }else{
+                    Toast("提交失败！");
+                }
             }
         },
         mounted: function() {
@@ -305,6 +322,7 @@
         height: 80px;
         border-radius: 5px;
         padding-left: 30px;
+        font-size: 24px;
         margin-top: 36px;
         background-color: #f6f6f6;
     }

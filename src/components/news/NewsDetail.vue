@@ -2,7 +2,7 @@
     <div id="detail">
         <header>
             <div class="header">
-                <h2>楼盘动态</h2>
+                <h2>行业咨询</h2>
             </div>
         </header>
         <div class="info">
@@ -15,19 +15,12 @@
             <div class="content" v-html="detail.details">
             </div>
         </div>
-        <div class="footer">
-            <div class="service">
-                <h4>在线客服</h4>
-            </div>
-            <input type="text" class="see" value="预约看房">
-            <input type="text" class="consult" value="电话咨询">
-        </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "DynamicDetail",
+        name: "NewsDetail",
         data(){
             return{
                 id:this.$route.query.id,
@@ -36,7 +29,7 @@
         },
         methods:{
             fetchData: async function (){
-                let res = await this.post('propertiesDynamic/selbyid',{"id":this.id});
+                let res = await this.post('industryInformation/selbyid',{"id":this.id});
                 this.detail = res.data.data;
             }
         },
@@ -138,22 +131,5 @@
         height: 30px;
         line-height: 30px;
         margin-top: 60px;
-    }
-    .footer>input{
-        width: 274px;
-        height: 76px;
-        border-radius: 5px;
-        font-size: 30px;
-        color: #ffffff;
-        text-align: center;
-        margin-top: 16px;
-    }
-    .see{
-        margin-left: 20px;
-        background-color: #ef3e4a;
-    }
-    .consult{
-        margin-left: 16px;
-        background-color: #00c0eb;
     }
 </style>

@@ -14,54 +14,14 @@
             </ul>
         </div>
         <div class="content">
-            <div>
+            <div v-for="(item,index) in lists" :key="index" @click="show(item.id)">
                 <div class="consult_content">
-                    <h4>宝音图<p>内蒙古财经大学</p></h4>
-                    <p>  “热爱地产，珍惜客户，提供优质服务， 我承诺我做到，做专业地产人”</p>
+                    <h4>{{item.name}}<p>{{item.university}}</p></h4>
+                    <p>{{item.slogan}}</p>
                     <span>在线咨询</span>
                 </div>
                 <div class="consult_image">
-                    <img src="../../assets/images/material/consult.jpg">
-                </div>
-            </div>
-            <div>
-                <div class="consult_content">
-                    <h4>宝音图<p>内蒙古财经大学</p></h4>
-                    <p>  “热爱地产，珍惜客户，提供优质服务， 我承诺我做到，做专业地产人”</p>
-                    <span>在线咨询</span>
-                </div>
-                <div class="consult_image">
-                    <img src="../../assets/images/material/consult.jpg">
-                </div>
-            </div>
-            <div>
-                <div class="consult_content">
-                    <h4>宝音图<p>内蒙古财经大学</p></h4>
-                    <p>  “热爱地产，珍惜客户，提供优质服务， 我承诺我做到，做专业地产人”</p>
-                    <span>在线咨询</span>
-                </div>
-                <div class="consult_image">
-                    <img src="../../assets/images/material/consult.jpg">
-                </div>
-            </div>
-            <div>
-                <div class="consult_content">
-                    <h4>宝音图<p>内蒙古财经大学</p></h4>
-                    <p>  “热爱地产，珍惜客户，提供优质服务， 我承诺我做到，做专业地产人”</p>
-                    <span>在线咨询</span>
-                </div>
-                <div class="consult_image">
-                    <img src="../../assets/images/material/consult.jpg">
-                </div>
-            </div>
-            <div>
-                <div class="consult_content">
-                    <h4>宝音图<p>内蒙古财经大学</p></h4>
-                    <p>  “热爱地产，珍惜客户，提供优质服务， 我承诺我做到，做专业地产人”</p>
-                    <span>在线咨询</span>
-                </div>
-                <div class="consult_image">
-                    <img src="../../assets/images/material/consult.jpg">
+                    <img :src="item.headPortrait">
                 </div>
             </div>
         </div>
@@ -73,7 +33,29 @@
     import Footer from "../assembly/Footer";
     export default {
         name: "Consult",
-        components: {Footer}
+        components: {Footer},
+        data(){
+            return {
+                lists:{}
+            }
+        },
+        methods: {
+            fetchData: async function (){
+                let res = await this.post('expert/selpage', {"current":1,"num":10});
+                this.lists = res.data.data.objs;
+            },
+            show(id){
+                this.$router.push({
+                    path:'/Consultant',
+                    query:{
+                        id:id
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 

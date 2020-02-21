@@ -1,7 +1,7 @@
 <template>
-    <div id="register">
+    <div id="register" v-show=registerShow>
         <div class="fork">
-            <img src="../../assets/images/person/fork.png">
+            <img src="../../assets/images/person/fork.png" @click="registerClose()">
         </div>
         <div class="content">
             <h2>手机号码注册</h2>
@@ -17,7 +17,7 @@
                 <p class="p1">我已阅读并同意<router-link to="#">《注册协议》</router-link><router-link to="#">《隐私政策》</router-link></p>
             </van-checkbox>
             <input type="button" value="确认">
-            <p class="p2">已有账号？<router-link to="#">去登录</router-link></p>
+            <p class="p2">已有账号？<span @click="toLogin()">去登录</span></p>
         </div>
     </div>
 </template>
@@ -27,8 +27,21 @@
         name: "Register",
         data() {
             return {
-                checked: false
+                checked:false,
+                registerShow: false
             };
+        },
+        methods:{
+            registerOpen(){
+                this.registerShow = true;
+            },
+            registerClose(){
+                this.registerShow = false;
+            },
+            toLogin(){
+                this.registerClose()
+                this.$refs.login.loginOpen();
+            }
         }
     }
 </script>
@@ -41,6 +54,7 @@
         left: 90px;
         border-radius: 20px;
         position: fixed;
+        background-color: #ffffff;
     }
     .fork{
         width: 570px;
@@ -120,7 +134,7 @@
         text-align: center;
         padding: 42px 0;
     }
-    .p2>a{
+    .p2>span{
         color: #01c0ec;
     }
 </style>

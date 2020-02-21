@@ -6,21 +6,38 @@
             </div>
         </header>
         <div class="entry">
-            <input type="text" placeholder="输入您的问题">
+            <input type="text" placeholder="输入您的问题" v-model="problem">
         </div>
         <div class="fill"></div>
         <div class="description">
-            <textarea placeholder="请详细描述您的问题"></textarea>
+            <textarea placeholder="请详细描述您的问题" v-model="represent"></textarea>
         </div>
         <div class="submit">
-            <input type="button" value="提交问题">
+            <input type="button" value="提交问题" @click="publish()">
         </div>
     </div>
 </template>
 
 <script>
+    import { Toast } from 'vant';
     export default {
-        name: "Answer"
+        name: "Answer",
+        data(){
+            return{
+                problem: '',
+                represent: ''
+            }
+        },
+        methods:{
+            publish: async function (){
+                let res = await this.post('propertiesWw/add', {"problem":this.problem,"represent":this.represent});
+                if(res.data.code === 200){
+                    Toast("提交成功！");
+                }else{
+                    Toast("提交失败！");
+                }
+            }
+        }
     }
 </script>
 
@@ -57,6 +74,7 @@
         width: 690px;
         height: 50px;
         margin: 25px 0;
+        font-size: 28px;
     }
     .entry>input::-webkit-input-placeholder{
         font-size: 28px;
@@ -76,6 +94,7 @@
         width: 690px;
         height: 260px;
         margin: 36px auto 34px;
+        font-size: 28px;
     }
     .description>textarea::-webkit-input-placeholder{
         font-size: 28px;

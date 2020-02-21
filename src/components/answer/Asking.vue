@@ -5,72 +5,19 @@
                 <h2>买房问问</h2>
             </div>
         </header>
-        <div class="answer">
-          <div>
-              <div class="ask">
-                  <h3>提交了购房资质审核以后，那么我的资质是否长 期有效呢？</h3>
-              </div>
-              <div class="question">
-                  <p>在提交了购房资质审核的相关材料后，购房资质审 核查询一般可在十日后进行。根据北京当前的购房 政策，如果您的家庭正常审核购房 提交了购房资质审核的相关材料后</p>
-              </div>
-          </div>
-        </div>
-        <div class="fill"></div>
-        <div class="answer">
-            <div>
-                <div class="ask">
-                    <h3>提交了购房资质审核以后，那么我的资质是否长 期有效呢？</h3>
-                </div>
-                <div class="question">
-                    <p>在提交了购房资质审核的相关材料后，购房资质审 核查询一般可在十日后进行。根据北京当前的购房 政策，如果您的家庭正常审核购房 提交了购房资质审核的相关材料后</p>
-                </div>
-            </div>
-        </div>
-        <div class="fill"></div>
-        <div class="answer">
-            <div>
-                <div class="ask">
-                    <h3>提交了购房资质审核以后，那么我的资质是否长 期有效呢？</h3>
-                </div>
-                <div class="question">
-                    <p>在提交了购房资质审核的相关材料后，购房资质审 核查询一般可在十日后进行。根据北京当前的购房 政策，如果您的家庭正常审核购房 提交了购房资质审核的相关材料后</p>
-                </div>
-            </div>
-        </div>
-        <div class="fill"></div>
-        <div class="answer">
-            <div>
-                <div class="ask">
-                    <h3>提交了购房资质审核以后，那么我的资质是否长 期有效呢？</h3>
-                </div>
-                <div class="question">
-                    <p>在提交了购房资质审核的相关材料后，购房资质审 核查询一般可在十日后进行。根据北京当前的购房 政策，如果您的家庭正常审核购房 提交了购房资质审核的相关材料后</p>
-                </div>
-            </div>
-        </div>
-        <div class="fill"></div>
-        <div class="answer">
-            <div>
-                <div class="ask">
-                    <h3>提交了购房资质审核以后，那么我的资质是否长 期有效呢？</h3>
-                </div>
-                <div class="question">
-                    <p>在提交了购房资质审核的相关材料后，购房资质审 核查询一般可在十日后进行。根据北京当前的购房 政策，如果您的家庭正常审核购房 提交了购房资质审核的相关材料后</p>
-                </div>
-            </div>
-        </div>
-        <div class="fill"></div>
-        <div class="answer">
-            <div>
-                <div class="ask">
-                    <h3>提交了购房资质审核以后，那么我的资质是否长 期有效呢？</h3>
-                </div>
-                <div class="question">
-                    <p>在提交了购房资质审核的相关材料后，购房资质审 核查询一般可在十日后进行。根据北京当前的购房 政策，如果您的家庭正常审核购房 提交了购房资质审核的相关材料后</p>
-                </div>
-            </div>
-        </div>
-        <div class="fill"></div>
+       <div v-for="(item,index) in lists" :key="index">
+           <div class="answer">
+               <div>
+                   <div class="ask">
+                       <h3>{{item.problem}}</h3>
+                   </div>
+                   <div class="question">
+                       <p>{{item.answer}}</p>
+                   </div>
+               </div>
+           </div>
+           <div class="fill"></div>
+       </div>
         <Footer></Footer>
     </div>
 </template>
@@ -79,7 +26,21 @@
     import Footer from "../assembly/Footer";
     export default {
         name: "Asking",
-        components: {Footer}
+        components: {Footer},
+        data(){
+            return{
+                lists:{}
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('propertiesWw/selpage', {"current":1,"num":10});
+                this.lists = res.data.data.objs;
+            },
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 
@@ -116,7 +77,7 @@
     .ask{
         padding: 40px 0 0 60px;
         background-image: url("../../assets/images/answer/question.png");
-        background-position-y: 42px;
+        background-position-y: 32px;
         background-repeat: no-repeat;
         background-size: 50px 50px;
     }
@@ -129,7 +90,7 @@
     .question{
         padding: 30px 0 0 60px;
         background-image: url("../../assets/images/answer/answer.png");
-        background-position-y: 26px;
+        background-position-y: 20px;
         background-repeat: no-repeat;
         background-size: 50px 50px;
     }

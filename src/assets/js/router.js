@@ -14,6 +14,7 @@ import PreInfo from '../../components/house/PreInfo';
 import Help from '../../components/house/Help';
 import About from '../../components/about/About';
 import News from '../../components/news/News';
+import NewsDetail from '../../components/news/NewsDetail';
 import Asking from '../../components/answer/Asking';
 import Answer from '../../components/answer/Answer';
 import Advice from '../../components/other/Advice';
@@ -22,6 +23,10 @@ import Consult from '../../components/consultant/Consult';
 import Consultant from '../../components/consultant/Consultant';
 import Register from '../../components/person/Register';
 import Login from '../../components/person/Login';
+import Message from '../../components/assembly/Message';
+import Car from '../../components/assembly/Car';
+import CouponPopup from '../../components/assembly/CouponPopup';
+import SearchDetail from '../../components/house/SearchDetail';
 
 Vue.use(Router) //使用vue-router
 
@@ -43,11 +48,16 @@ export default new Router({
         { path: "/Answer", name: "Answer", component: Answer},
         { path: "/About", name: "About", component: About},
         { path: "/News", name: "News", component: News},
+        { path: "/NewsDetail", name: "NewsDetail", component: NewsDetail},
         { path: "/Advice", name: "Advice", component: Advice},
         { path: "/Appointment", name: "Advice", component:Appointment},
         { path: "/Consult", name: "Consult", component:Consult},
         { path: "/Consultant", name: "Consultant", component:Consultant},
         { path: "/Register", name: "Register", component:Register},
-        { path: "/Login", name: "Login", component:Login}
+        { path: "/Login", name: "Login", component:Login},
+        { path: "/Message", name: "Message", component:Message},
+        { path: "/Car", name: "Message", component:Car},
+        { path: "/CouponPopup", name: "CouponPopup", component:CouponPopup},
+        { path: "/SearchDetail", name: "SearchDetail", component:SearchDetail}
     ]
 })

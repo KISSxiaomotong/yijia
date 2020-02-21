@@ -6,7 +6,7 @@ module.exports = {
     devServer: {
         proxy: {
             '/proxy/': {
-                'target': 'http://sbo.natapp1.cc', //天气接口地址
+                'target': 'http://sbo.natapp1.cc',
                 'secure': false, // false为http访问，true为https访问
                 'changeOrigin': true, // 跨域访问设置，true代表跨域
                 'pathRewrite': { // 路径改写规则
@@ -53,5 +53,10 @@ module.exports = {
 
     pluginOptions: {
         // ...
+    },
+    configureWebpack: {
+        externals: {
+            "BMap": "BMap"
+        }
     }
 }

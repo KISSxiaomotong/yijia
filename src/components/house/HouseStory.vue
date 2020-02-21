@@ -6,122 +6,20 @@
             </div>
         </header>
             <div class="content">
-                <div>
+                <div v-for="(item,index) in lists" :key="index">
                     <div class="top">
                         <div class="image">
-                            <img src="../../assets/images/house/story.jpg">
+                            <img :src="item.photo">
                         </div>
                         <div class="info">
-                            <h2>董女士</h2>
-                            <p>成交楼盘：金樾和著</p>
-                            <p>成交时间：2020-01-06</p>
+                            <h2>{{item.mfName}}</h2>
+                            <p>成交楼盘：{{item.buyProperties}}</p>
+                            <p>成交时间：{{item.cdate}}</p>
                         </div>
                     </div>
                     <div class="bottom">
                         <div>
-                            <p>第一次听说益家，没想到服务专业，细致，在客户角度考虑问 题，及时提醒购房人，有居理客服陪同少操心。很好的一次体 验，感谢薛涛涛第一次听说益家...<router-link to="#">展开全文</router-link></p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="top">
-                        <div class="image">
-                            <img src="../../assets/images/house/story.jpg">
-                        </div>
-                        <div class="info">
-                            <h2>董女士</h2>
-                            <p>成交楼盘：金樾和著</p>
-                            <p>成交时间：2020-01-06</p>
-                        </div>
-                    </div>
-                    <div class="bottom">
-                        <div>
-                            <p>第一次听说益家，没想到服务专业，细致，在客户角度考虑问 题，及时提醒购房人，有居理客服陪同少操心。很好的一次体 验，感谢薛涛涛第一次听说益家...<router-link to="#">展开全文</router-link></p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="top">
-                        <div class="image">
-                            <img src="../../assets/images/house/story.jpg">
-                        </div>
-                        <div class="info">
-                            <h2>董女士</h2>
-                            <p>成交楼盘：金樾和著</p>
-                            <p>成交时间：2020-01-06</p>
-                        </div>
-                    </div>
-                    <div class="bottom">
-                        <div>
-                            <p>第一次听说益家，没想到服务专业，细致，在客户角度考虑问 题，及时提醒购房人，有居理客服陪同少操心。很好的一次体 验，感谢薛涛涛第一次听说益家...<router-link to="#">展开全文</router-link></p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="top">
-                        <div class="image">
-                            <img src="../../assets/images/house/story.jpg">
-                        </div>
-                        <div class="info">
-                            <h2>董女士</h2>
-                            <p>成交楼盘：金樾和著</p>
-                            <p>成交时间：2020-01-06</p>
-                        </div>
-                    </div>
-                    <div class="bottom">
-                        <div>
-                            <p>第一次听说益家，没想到服务专业，细致，在客户角度考虑问 题，及时提醒购房人，有居理客服陪同少操心。很好的一次体 验，感谢薛涛涛第一次听说益家...<router-link to="#">展开全文</router-link></p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="top">
-                        <div class="image">
-                            <img src="../../assets/images/house/story.jpg">
-                        </div>
-                        <div class="info">
-                            <h2>董女士</h2>
-                            <p>成交楼盘：金樾和著</p>
-                            <p>成交时间：2020-01-06</p>
-                        </div>
-                    </div>
-                    <div class="bottom">
-                        <div>
-                            <p>第一次听说益家，没想到服务专业，细致，在客户角度考虑问 题，及时提醒购房人，有居理客服陪同少操心。很好的一次体 验，感谢薛涛涛第一次听说益家...<router-link to="#">展开全文</router-link></p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="top">
-                        <div class="image">
-                            <img src="../../assets/images/house/story.jpg">
-                        </div>
-                        <div class="info">
-                            <h2>董女士</h2>
-                            <p>成交楼盘：金樾和著</p>
-                            <p>成交时间：2020-01-06</p>
-                        </div>
-                    </div>
-                    <div class="bottom">
-                        <div>
-                            <p>第一次听说益家，没想到服务专业，细致，在客户角度考虑问 题，及时提醒购房人，有居理客服陪同少操心。很好的一次体 验，感谢薛涛涛第一次听说益家...<router-link to="#">展开全文</router-link></p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="top">
-                        <div class="image">
-                            <img src="../../assets/images/house/story.jpg">
-                        </div>
-                        <div class="info">
-                            <h2>董女士</h2>
-                            <p>成交楼盘：金樾和著</p>
-                            <p>成交时间：2020-01-06</p>
-                        </div>
-                    </div>
-                    <div class="bottom">
-                        <div>
-                            <p>第一次听说益家，没想到服务专业，细致，在客户角度考虑问 题，及时提醒购房人，有居理客服陪同少操心。很好的一次体 验，感谢薛涛涛第一次听说益家...<router-link to="#">展开全文</router-link></p>
+                            <p>{{item.represent}}<router-link to="#">查看全文</router-link></p>
                         </div>
                     </div>
                 </div>
@@ -131,7 +29,21 @@
 
 <script>
     export default {
-        name: "HouseStory"
+        name: "HouseStory",
+        data(){
+            return{
+                lists: ""
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('buyHouseStory/selpage', {"current":1,"num":10});
+                this.lists = res.data.data.objs;
+            },
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 

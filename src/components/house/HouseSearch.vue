@@ -3,7 +3,7 @@
         <div class="header">
             <div>
                 <div class="input">
-                    <input type="input" placeholder="请输入楼盘名或区域名">
+                    <input type="input" placeholder="请输入楼盘名或区域名" v-model="name" @keyup="search($event)">
                 </div>
                 <router-link to="#"><img src="../../assets/images/house/user.png"></router-link>
             </div>
@@ -11,78 +11,23 @@
         <div class="build">
             <div class="build_select">
                 <van-dropdown-menu>
-                    <van-dropdown-item title="区域" :options="test" />
-                    <van-dropdown-item title="价格" :options="test" />
-                    <van-dropdown-item title="户型" :options="test" />
-                    <van-dropdown-item title="筛选" :options="test" />
-                    <van-dropdown-item title="排序" :options="test" />
+                    <van-dropdown-item v-model="checkedArea" :options="area" @change="changeArea()"/>
+                    <van-dropdown-item v-model="checkedPrice" :options="price" @change="changePrice()"/>
+                    <van-dropdown-item v-model="checkedApartment" :options="apartment" @change="changeApartment()"/>
+                    <van-dropdown-item v-model="checkedScreen" :options="screen" @change="changeScreen()"/>
+                    <van-dropdown-item v-model="checkedOrder" :options="order" @change="changeOrder()"/>
                 </van-dropdown-menu>
             </div>
             <div class="build_content">
-                <div>
+                <div v-for="(item,index) in lists" :key="index" @click="show(item.id)">
                     <div class="build_image">
-                        <img src="../../assets/images/material/test1.jpg">
+                        <img :src="item.cover">
                     </div>
                     <div class="build_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="build_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="build_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="build_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="build_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="build_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="build_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="build_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="build_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="build_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="build_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
+                        <h4>{{item.name}}<span>在售</span></h4>
+                        <p>地址：{{item.address}}</p>
+                        <h5>2019120 · {{item.opening}}</h5>
+                        <h3>{{item.unitPriceMin}}<span>万元/m²</span><p>{{item.totalPriceMin}}-{{item.totalPriceMax}}㎡</p></h3>
                     </div>
                 </div>
             </div>
@@ -98,12 +43,124 @@
         components: {Footer},
         data (){
             return {
-                test: [
-                    { text: '测试1', value: '测试1' },
-                    { text: '测试2', value: '测试2' },
-                    { text: '测试3', value: '测试3'},
-                ]
+                name: "",
+                area: [],
+                price: [
+                    { text: '价格', value: '0,2000'},
+                    { text: '<200万', value: '0,200'},
+                    { text: '200-400万', value: '200,400'},
+                    { text: '400-500万', value: '400,500'},
+                    { text: '500-600万', value: '500,600'},
+                    { text: '600-800万', value: '600,800'},
+                    { text: '800-1000万', value: '800,1000'},
+                    { text: '1000-2000万', value: '1000,2000'}
+                ],
+                apartment: [
+                    { text: '户型', value: 0},
+                    { text: '一居', value: 1},
+                    { text: '二居', value: 2},
+                    { text: '三居', value: 3},
+                    { text: '四居', value: 4},
+                    { text: '五居及以上', value: 5},
+                ],
+                screen: [
+                    { text: '面积', value: '0,2000'},
+                    { text: '<50m²', value: '0,50'},
+                    { text: '50-80m²', value: '50,80'},
+                    { text: '80-120m²', value: '80,120'},
+                    { text: '120-140m²', value: '120,140'},
+                    { text: '140-160m²', value: '140,160'},
+                    { text: '>160m²', value: '160,2000'}
+                ],
+                order: [
+                    { text: '排序', value: 0},
+                    { text: '总价排序', value: 1},
+                    { text: '单价排序', value: 2},
+                    { text: '时间排序', value: 3},
+                ],
+                checkedArea: 0,
+                checkedPrice: '0,2000',
+                checkedApartment: 0,
+                checkedScreen: '0,2000',
+                checkedOrder: 0,
+                lists: {}
             }
+        },
+        methods: {
+            changeArea: async function (){
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"regionId":this.checkedArea});
+                this.lists = res.data.data.objs;
+            },
+            changePrice: async function (){
+                let price = this.checkedPrice;
+                price = price.split(",");
+                let unitPriceMin = price[0];
+                let unitPriceMax = price[1];
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"unitPriceMin":unitPriceMin,"unitPriceMax":unitPriceMax});
+                this.lists = res.data.data.objs;
+            },
+            changeApartment: async function (){
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"hxing":this.checkedApartment});
+                this.lists = res.data.data.objs;
+            },
+            changeScreen: async function (){
+                let screen = this.checkedPrice;
+                screen = screen.split(",");
+                let unitAreaMin = screen[0];
+                let unitAreaMax = screen[1];
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"unitAreaMin":unitAreaMin,"unitAreaMax":unitAreaMax});
+                this.lists = res.data.data.objs;
+            },
+            changeOrder: async function (){
+                let order = this.checkedOrder;
+                if(order == 0){
+                    let res = await this.post('properties/selpage', {"current":1,"num":10});
+                    this.lists = res.data.data.objs;
+                }else if(order == 1){
+                    let res = await this.post('properties/selpage', {"current":1,"num":10,"totalIsAsc": true});
+                    this.lists = res.data.data.objs;
+                }else if(order == 2){
+                    let res = await this.post('properties/selpage', {"current":1,"num":10,"unitIsAsc": true});
+                    this.lists = res.data.data.objs;
+                }else if(order == 3){
+                    let res = await this.post('properties/selpage', {"current":1,"num":10,"cdateIsAsc": true});
+                    this.lists = res.data.data.objs;
+                }
+
+            },
+            fetchData: async function (){
+                let res = await this.post('properties/selpage', {"current":1,"num":10});
+                this.lists = res.data.data.objs;
+            },
+            fetchArea: async function (){
+                let res = await this.post('region/selpage');
+                let area = [
+                    {"text":"区域","value": 0}
+                ];
+                res = res.data.data[0].children;
+                Object.keys(res).forEach(function(key){
+                    area.push({"text":res[key].name,"value":res[key].id});
+                });
+                this.area = area;
+            },
+            search: async function (event){
+                if(event.keyCode == 13){
+                    let res = await this.post('properties/selpage', {"current":1,"num":10,"name":this.name});
+                    this.lists = res.data.data.objs;
+                }
+            },
+            show(id){
+                this.$router.push({
+                    path:'/SearchDetail',
+                    query:{
+                        id:id
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.fetchData();
+            this.fetchArea();
         }
     }
 </script>

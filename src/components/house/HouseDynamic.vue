@@ -6,74 +6,14 @@
             </div>
         </header>
         <div class="content">
-            <div class="info">
+            <div class="info" v-for="(item,index) in lists" :key="index" @click="show(item.id)">
                 <div class="info_left">
-                    <h3>新年伊始央行降准，股市行情将继续？</h3>
-                    <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准...</p>
-                    <span>2020-01-02</span>
+                    <h3>{{item.title}}</h3>
+                    <p>{{item.represent}}</p>
+                    <span>{{item.cdate}}</span>
                 </div>
                 <div class="info_right">
-                    <img src="../../assets/images/material/dynamic.png">
-                </div>
-            </div>
-            <div class="info">
-                <div class="info_left">
-                    <h3>新年伊始央行降准，股市行情将继续？</h3>
-                    <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准...</p>
-                    <span>2020-01-02</span>
-                </div>
-                <div class="info_right">
-                    <img src="../../assets/images/material/dynamic.png">
-                </div>
-            </div>
-            <div class="info">
-                <div class="info_left">
-                    <h3>新年伊始央行降准，股市行情将继续？</h3>
-                    <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准...</p>
-                    <span>2020-01-02</span>
-                </div>
-                <div class="info_right">
-                    <img src="../../assets/images/material/dynamic.png">
-                </div>
-            </div>
-            <div class="info">
-                <div class="info_left">
-                    <h3>新年伊始央行降准，股市行情将继续？</h3>
-                    <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准...</p>
-                    <span>2020-01-02</span>
-                </div>
-                <div class="info_right">
-                    <img src="../../assets/images/material/dynamic.png">
-                </div>
-            </div>
-            <div class="info">
-                <div class="info_left">
-                    <h3>新年伊始央行降准，股市行情将继续？</h3>
-                    <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准...</p>
-                    <span>2020-01-02</span>
-                </div>
-                <div class="info_right">
-                    <img src="../../assets/images/material/dynamic.png">
-                </div>
-            </div>
-            <div class="info">
-                <div class="info_left">
-                    <h3>新年伊始央行降准，股市行情将继续？</h3>
-                    <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准...</p>
-                    <span>2020-01-02</span>
-                </div>
-                <div class="info_right">
-                    <img src="../../assets/images/material/dynamic.png">
-                </div>
-            </div>
-            <div class="info">
-                <div class="info_left">
-                    <h3>新年伊始央行降准，股市行情将继续？</h3>
-                    <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准...</p>
-                    <span>2020-01-02</span>
-                </div>
-                <div class="info_right">
-                    <img src="../../assets/images/material/dynamic.png">
+                    <img :src="item.picture">
                 </div>
             </div>
         </div>
@@ -89,7 +29,29 @@
 
 <script>
     export default {
-        name: "HouseDynamic"
+        name: "HouseDynamic",
+        data(){
+            return {
+                lists:{}
+            }
+        },
+        methods: {
+            fetchData: async function (){
+                let res = await this.post('propertiesDynamic/selpage', {"current":1,"num":10});
+                this.lists = res.data.data.objs;
+            },
+            show(id){
+                this.$router.push({
+                    path:'/DynamicDetail',
+                    query:{
+                        id:id
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 

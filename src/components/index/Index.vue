@@ -2,9 +2,9 @@
     <div id="index">
         <div class="header">
             <div class="down"><p>南昌</p><span></span></div>
-            <router-link to="/foo" class="user">
+            <span class="user" @click="center()">
                 <img src="../../assets/images/user.png" />
-            </router-link>
+            </span>
             <div class="input">
                 <input type="input" placeholder="请输入楼盘名或区域名">
             </div>
@@ -246,14 +246,20 @@
             </div>
         </div>
         <Footer></Footer>
+        <CouponPopup ref="coupon"></CouponPopup>
+        <Login ref="login" @toRegister="toRegister"></Login>
+        <Register ref="register"  @toLogin="toLogin"></Register>
     </div>
 </template>
 
 <script>
     import Footer from "../assembly/Footer";
+    import CouponPopup from "../assembly/CouponPopup";
+    import Login from "../person/Login";
+    import Register from "../person/Register";
     export default {
         name: 'Index',
-        components: {Footer},
+        components: {Footer,CouponPopup,Login,Register},
         props: {
 
         },
@@ -336,6 +342,34 @@
             },
             doend (){
                 this.houseStyle.transition = 'left .3s';
+            },
+            closeCoupon(){
+                this.$refs.coupon.couponClose();
+            },
+            center(){
+                this.closeCoupon();
+                let check = this.checkLogin();
+                if(check){
+
+                }else{
+                    this.$refs.login.loginOpen();
+                }
+            },
+            checkLogin(){
+                let loginInfo = localStorage.getItem("userId");
+                if(loginInfo){
+                    return true;
+                }else{
+                    return false;
+                }
+            },
+            toLogin(){
+                this.$refs.register.registerClose();
+                this.$refs.login.loginOpen();
+            },
+            toRegister(){
+                this.$refs.login.loginClose();
+                this.$refs.register.registerOpen();
             }
         },
         mounted (){

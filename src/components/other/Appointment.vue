@@ -11,26 +11,47 @@
         <div class="content">
             <div class="see">
                 <h2>预约看房时间</h2>
-                <input type="text" placeholder="请填写适合你的看房时间">
+                <input type="text" placeholder="请填写适合你的看房时间" v-model="cdate">
             </div>
             <div class="phone">
                 <h2>预约手机号码</h2>
-                <input type="text" placeholder="请输入你的手机号码">
+                <input type="text" placeholder="请输入你的手机号码" v-model="phone">
             </div>
             <div class="house">
                 <h2>想去看的楼盘<span>（非必填）</span></h2>
-                <input type="text" placeholder="请选择适合你的看房时间">
+                <input type="text" placeholder="请填写想去看的楼盘" v-model="details">
             </div>
         </div>
         <div class="submit">
-            <input type="button" value="提交">
+            <input type="button" value="提交" @click="publish()">
         </div>
     </div>
 </template>
 
 <script>
+    import { Toast } from 'vant';
     export default {
-        name: "Appointment"
+        name: "Appointment",
+        data(){
+            return{
+                cdate: "",
+                phone: "",
+                details: ""
+            }
+        },
+        methods:{
+            publish: async function (){
+                let res = await this.post('request/add', {
+                    "type":1,"cdate":this.cdate,"phone":this.phone,"details":this.details
+                });
+                if(res.data.code === 200){
+                    Toast("提交成功！");
+                }else{
+                    Toast("提交失败！");
+                }
+            }
+        }
+
     }
 </script>
 

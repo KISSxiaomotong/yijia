@@ -6,21 +6,41 @@
             </div>
         </header>
         <div class="description">
-            <textarea placeholder="请详细描述您的问题"></textarea>
+            <textarea placeholder="请详细描述您的问题" v-model="details"></textarea>
         </div>
         <div class="fill"></div>
         <div class="entry">
-            <input type="text" placeholder="输入你的手机号码（非必填）">
+            <input type="text" placeholder="输入你的手机号码（非必填）" v-model="phon">
         </div>
         <div class="submit">
-            <input type="button" value="提交">
+            <input type="button" value="提交" @click="publish()">
         </div>
     </div>
 </template>
 
 <script>
+    import { Toast } from 'vant';
     export default {
-        name: "Answer"
+        name: "Answer",
+        data(){
+            return{
+                details: "",
+                phone: ""
+            }
+        },
+        methods:{
+            publish: async function (){
+                let res = await this.post('request/add', {
+                    "type":3,"phone":this.phone,"details":this.details
+                });
+                if(res.data.code === 200){
+                    Toast("提交成功！");
+                }else{
+                    Toast("提交失败！");
+                }
+            }
+        }
+
     }
 </script>
 

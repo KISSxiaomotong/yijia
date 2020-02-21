@@ -1,17 +1,17 @@
 <template>
-    <div id="login">
+    <div id="login" v-show=loginShow>
         <div class="fork">
-            <img src="../../assets/images/person/fork.png">
+            <img src="../../assets/images/person/fork.png" @click="loginClose()">
         </div>
         <div class="content">
             <h2>手机号码登录</h2>
-            <input type="text" placeholder="请输入你的手机号码" class="phone">
-            <input type="text" placeholder="请输入密码" class="password">
+            <input type="text" placeholder="请输入你的手机号码" class="phone" v-model="phone">
+            <input type="text" placeholder="请输入密码" class="password" v-model="password">
             <router-link to="#">忘记密码？</router-link>
         </div>
         <div class="other">
             <input type="button" value="确认">
-            <p class="p2">没有账号？<router-link to="#">去注册</router-link></p>
+            <p class="p2">没有账号？<span @click="toRegister()">去注册</span></p>
         </div>
     </div>
 </template>
@@ -21,8 +21,21 @@
         name: "Register",
         data() {
             return {
-                checked: false
+                loginShow: false,
+                phone: "",
+                password: ""
             };
+        },
+        methods:{
+            loginOpen(){
+                this.loginShow = true;
+            },
+            loginClose(){
+                this.loginShow = false;
+            },
+            toRegister(){
+                this.$emit('toRegister');
+            }
         }
     }
 </script>
@@ -33,6 +46,7 @@
         height: 630px;
         top: 300px;
         left: 90px;
+        background-color: #ffffff;
         border-radius: 20px;
         position: fixed;
     }
@@ -95,7 +109,7 @@
         text-align: center;
         padding: 42px 0;
     }
-    .p2>a{
+    .p2>span{
         color: #01c0ec;
     }
 </style>
