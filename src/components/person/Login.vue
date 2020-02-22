@@ -6,11 +6,11 @@
         <div class="content">
             <h2>手机号码登录</h2>
             <input type="text" placeholder="请输入你的手机号码" class="phone" v-model="phone">
-            <input type="text" placeholder="请输入密码" class="password" v-model="password">
+            <input type="password" placeholder="请输入密码" class="password" v-model="password">
             <router-link to="#">忘记密码？</router-link>
         </div>
         <div class="other">
-            <input type="button" value="确认">
+            <input type="button" value="确认" @click="login">
             <p class="p2">没有账号？<span @click="toRegister()">去注册</span></p>
         </div>
     </div>
@@ -35,6 +35,14 @@
             },
             toRegister(){
                 this.$emit('toRegister');
+            },
+            login: async function (){
+                let res = await this.post('user/signin', {"phone":this.phone,"passWord":this.password});
+                res = res.data;
+                if(res.code == 200){
+                    let user = res.data;
+                    window.localStorage.setItem("user",JSON.stringify(user));
+                }
             }
         }
     }

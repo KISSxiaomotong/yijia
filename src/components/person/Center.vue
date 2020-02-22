@@ -4,19 +4,19 @@
             <h2>个人中心</h2>
         </header>
         <div class="info">
-            <img src="../../assets/images/material/avatar.jpg">
-            <h2>偷的浮生半日闲</h2>
+            <img :src="user.headPortrait">
+            <h2>{{user.userName}}</h2>
             <router-link class="tag" to="#"><span>编辑个人资料</span></router-link>
         </div>
         <div class="fill"></div>
         <div class="list">
             <ul>
-                <li><router-link to="#"><img src="../../assets/images/person/coupon.png"><span>我的优惠券</span></router-link></li>
-                <li><router-link to="#"><img src="../../assets/images/person/house.png"><span>帮我找房</span></router-link></li>
-                <li><router-link to="#"><img src="../../assets/images/person/car.png"><span>预约专车</span></router-link></li>
+                <li><router-link to="/Coupon"><img src="../../assets/images/person/coupon.png"><span>我的优惠券</span></router-link></li>
+                <li><router-link to="/Help"><img src="../../assets/images/person/house.png"><span>帮我找房</span></router-link></li>
+                <li><router-link to="/Appointment"><img src="../../assets/images/person/car.png"><span>预约专车</span></router-link></li>
                 <li><router-link to="#"><img src="../../assets/images/person/house.png"><span>楼盘合作</span></router-link></li>
-                <li><router-link to="#"><img src="../../assets/images/person/about.png"><span>关于我们</span></router-link></li>
-                <li><router-link to="#"><img src="../../assets/images/person/suggest.png"><span>投诉建议</span></router-link></li>
+                <li><router-link to="/About"><img src="../../assets/images/person/about.png"><span>关于我们</span></router-link></li>
+                <li><router-link to="/Answer"><img src="../../assets/images/person/suggest.png"><span>投诉建议</span></router-link></li>
             </ul>
         </div>
         <Footer></Footer>
@@ -27,7 +27,21 @@
     import Footer from "../assembly/Footer";
     export default {
         name: "Center",
-        components: {Footer}
+        components: {Footer},
+        data(){
+            return{
+                user:{}
+            }
+        },
+        methods:{
+            getUser(){
+                let user = JSON.parse(window.localStorage.getItem('user'));
+                this.user = user;
+            }
+        },
+        mounted() {
+            this.getUser();
+        }
     }
 </script>
 

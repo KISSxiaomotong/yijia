@@ -27,6 +27,7 @@ import Message from '../../components/assembly/Message';
 import Car from '../../components/assembly/Car';
 import CouponPopup from '../../components/assembly/CouponPopup';
 import SearchDetail from '../../components/house/SearchDetail';
+import Forget from '../../components/person/Forget';
 
 Vue.use(Router) //使用vue-router
 
@@ -58,6 +59,7 @@ export default new Router({
         { path: "/Message", name: "Message", component:Message},
         { path: "/Car", name: "Message", component:Car},
         { path: "/CouponPopup", name: "CouponPopup", component:CouponPopup},
-        { path: "/SearchDetail", name: "SearchDetail", component:SearchDetail}
+        { path: "/SearchDetail", name: "SearchDetail", component:SearchDetail},
+        { path: "/Forget", name: "Forget", component:Forget}
     ]
 })

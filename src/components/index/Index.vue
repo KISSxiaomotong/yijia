@@ -11,16 +11,16 @@
         </div>
         <div class="icon">
             <ul>
-                <li><router-link to="/center"><img src="../../assets/images/icon1.jpg"/><span>楼盘查询</span></router-link></li>
-                <li><router-link to="#"><img src="../../assets/images/icon2.jpg"/><span>帮我找房</span></router-link></li>
-                <li><router-link to="#"><img src="../../assets/images/icon3.jpg"/><span>咨询师</span></router-link></li>
-                <li><router-link to="#"><img src="../../assets/images/icon4.jpg"/><span>预约专车</span></router-link></li>
+                <li><router-link to="/HouseSearch"><img src="../../assets/images/icon1.jpg"/><span>楼盘查询</span></router-link></li>
+                <li><router-link to="/Help"><img src="../../assets/images/icon2.jpg"/><span>帮我找房</span></router-link></li>
+                <li><router-link to="/Consult"><img src="../../assets/images/icon3.jpg"/><span>咨询师</span></router-link></li>
+                <li><router-link to="/Appointment"><img src="../../assets/images/icon4.jpg"/><span>预约专车</span></router-link></li>
             </ul>
             <ul>
-                <li><router-link to="#"><img src="../../assets/images/icon5.jpg"/><span>买房故事</span></router-link></li>
-                <li><router-link to="#"><img src="../../assets/images/icon6.jpg"/><span>买房问问</span></router-link></li>
-                <li><router-link to="#"><img src="../../assets/images/icon7.jpg"/><span>关于我们</span></router-link></li>
-                <li><router-link to="#"><img src="../../assets/images/icon8.jpg"/><span>行业资讯</span></router-link></li>
+                <li><router-link to="/HouseStory"><img src="../../assets/images/icon5.jpg"/><span>买房故事</span></router-link></li>
+                <li><router-link to="/Asking"><img src="../../assets/images/icon6.jpg"/><span>买房问问</span></router-link></li>
+                <li><router-link to="/About"><img src="../../assets/images/icon7.jpg"/><span>关于我们</span></router-link></li>
+                <li><router-link to="/News"><img src="../../assets/images/icon8.jpg"/><span>行业资讯</span></router-link></li>
             </ul>
         </div>
         <div class="news">
@@ -301,7 +301,8 @@
                     { text: '测试1', value: '测试1' },
                     { text: '测试2', value: '测试2' },
                     { text: '测试3', value: '测试3'},
-                ]
+                ],
+                lists: {}
             }
         },
         methods: {
@@ -343,6 +344,13 @@
             doend (){
                 this.houseStyle.transition = 'left .3s';
             },
+            openCoupon(){
+                let coupon = window.localStorage.getItem('coupon');
+                if(coupon !== "coupon"){
+                    window.localStorage.setItem("coupon","coupon");
+                    this.$refs.coupon.couponOpen();
+                }
+            },
             closeCoupon(){
                 this.$refs.coupon.couponClose();
             },
@@ -350,14 +358,14 @@
                 this.closeCoupon();
                 let check = this.checkLogin();
                 if(check){
-
+                    this.$router.push('/Center');
                 }else{
                     this.$refs.login.loginOpen();
                 }
             },
             checkLogin(){
-                let loginInfo = localStorage.getItem("userId");
-                if(loginInfo){
+                let user = JSON.parse(window.localStorage.getItem('user'));
+                if(user){
                     return true;
                 }else{
                     return false;
@@ -370,9 +378,14 @@
             toRegister(){
                 this.$refs.login.loginClose();
                 this.$refs.register.registerOpen();
+            },
+            fetchData: async function (){
+                let res = await this.post('home/byphone');
+                this.lists = res.data.data.objs;
             }
         },
         mounted (){
+            this.openCoupon();
             //计算边界
             this.border = this.$refs.comment.clientWidth - this.$refs.slide.clientWidth;
             // 使用js的现代事件监听transition过渡结束
@@ -383,6 +396,7 @@
             this.$refs.house.addEventListener('transitionend',function(){
                 _this.endH = this.offsetLeft;
             });
+            this.fetchData();
         }
     }
 </script>

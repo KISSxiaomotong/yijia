@@ -26,7 +26,7 @@
                     <div class="build_detail">
                         <h4>{{item.name}}<span>在售</span></h4>
                         <p>地址：{{item.address}}</p>
-                        <h5>2019120 · {{item.opening}}</h5>
+                        <h5>{{item.opening | dateFormat()}} · {{item.opening}}</h5>
                         <h3>{{item.unitPriceMin}}<span>万元/m²</span><p>{{item.totalPriceMin}}-{{item.totalPriceMax}}㎡</p></h3>
                     </div>
                 </div>
@@ -161,6 +161,11 @@
         mounted() {
             this.fetchData();
             this.fetchArea();
+        },
+        filters:{
+            dateFormat(datestr){
+                return datestr.replace(/-/g,"");
+            }
         }
     }
 </script>

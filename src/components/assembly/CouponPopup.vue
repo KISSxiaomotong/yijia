@@ -19,12 +19,15 @@
         name: "CouponPopup",
         data(){
             return{
-                couponShow: true
+                couponShow: false
             }
         },
         methods:{
             couponClose(){
                 this.couponShow = false;
+            },
+            couponOpen(){
+                this.couponShow = true;
             }
         }
     }
