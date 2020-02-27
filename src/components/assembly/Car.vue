@@ -23,6 +23,10 @@
         },
         methods:{
             publish: async function (){
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    Toast('手机号格式不正确');
+                    return false;
+                }
                 let res = await this.post('request/add', {
                     "type":1,"phone":this.phone
                 });
@@ -69,6 +73,7 @@
     .content>input[type='text']{
         width: 462px;
         height: 80px;
+        font-size: 26px;
         margin: 30px 0;
         padding-left: 30px;
         border-radius: 5px;

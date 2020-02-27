@@ -2,6 +2,7 @@
     <div id="help">
         <header>
             <div class="header">
+                <div @click="back()"></div>
                 <h2>帮我找房</h2>
             </div>
         </header>
@@ -67,11 +68,14 @@
                 ],
                 budget: '',
                 region: '',
-                shape: '',
+                shape: '不限',
                 phone: ''
             }
         },
         methods: {
+            back(){
+                this.$router.go(-1);//返回上一层
+            },
             mousePos: function (e) {
                 var pos = {};
                 pos.x = e.pageX;
@@ -121,6 +125,18 @@
                 this.shape = this.apartment[index];
             },
             publish: async function (){
+                if (this.budget == 0){
+                    Toast("请选择购房预算！");
+                    return false;
+                }
+                if (this.region == ''){
+                    Toast("请填写购房区域！");
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    Toast('手机号格式不正确');
+                    return false;
+                }
                 let res = await this.post('findHouse/add', {
                     "budget":this.budget,"region":this.region,
                     "shape":this.shape,"phone":this.phone
@@ -160,15 +176,22 @@
         height: 88px;
         margin: 0 auto;
     }
+    .header>div{
+        height: 88px;
+        width: 88px;
+        float: left;
+        background-image: url("../../assets/images/person/left_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 26px 40px;
+        background-position-y: 20px;
+    }
     .header>h2{
         font-size: 36px;
         text-align: center;
         height: 88px;
         line-height: 88px;
-        background-image: url("../../assets/images/person/left_arrow.png");
-        background-repeat: no-repeat;
-        background-size: 26px 40px;
-        background-position-y: 20px;
+        float: left;
+        margin-left: 200px;
     }
     .progress{
         width: 690px;

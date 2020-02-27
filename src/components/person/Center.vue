@@ -1,12 +1,15 @@
 <template>
     <div id="center">
         <header>
-            <h2>个人中心</h2>
+            <div class="header">
+                <div @click="back()"></div>
+                <h2>个人中心</h2>
+            </div>
         </header>
         <div class="info">
             <img :src="user.headPortrait">
             <h2>{{user.userName}}</h2>
-            <router-link class="tag" to="#"><span>编辑个人资料</span></router-link>
+            <router-link class="tag" to="Mydata"><span>编辑个人资料</span></router-link>
         </div>
         <div class="fill"></div>
         <div class="list">
@@ -14,9 +17,9 @@
                 <li><router-link to="/Coupon"><img src="../../assets/images/person/coupon.png"><span>我的优惠券</span></router-link></li>
                 <li><router-link to="/Help"><img src="../../assets/images/person/house.png"><span>帮我找房</span></router-link></li>
                 <li><router-link to="/Appointment"><img src="../../assets/images/person/car.png"><span>预约专车</span></router-link></li>
-                <li><router-link to="#"><img src="../../assets/images/person/house.png"><span>楼盘合作</span></router-link></li>
+                <li><router-link to="/HouseSearch"><img src="../../assets/images/person/house.png"><span>楼盘合作</span></router-link></li>
                 <li><router-link to="/About"><img src="../../assets/images/person/about.png"><span>关于我们</span></router-link></li>
-                <li><router-link to="/Answer"><img src="../../assets/images/person/suggest.png"><span>投诉建议</span></router-link></li>
+                <li><router-link to="/Advice"><img src="../../assets/images/person/suggest.png"><span>投诉建议</span></router-link></li>
             </ul>
         </div>
         <Footer></Footer>
@@ -34,6 +37,9 @@
             }
         },
         methods:{
+            back(){
+                this.$router.go(-1);//返回上一层
+            },
             getUser(){
                 let user = JSON.parse(window.localStorage.getItem('user'));
                 this.user = user;
@@ -41,6 +47,14 @@
         },
         mounted() {
             this.getUser();
+            if(!this.user){
+                this.$router.push({
+                    path:'/index',
+                    query:{
+                        notLogin:true
+                    }
+                });
+            }
         }
     }
 </script>
@@ -55,15 +69,27 @@
         height: 88px;
         margin: 0 auto;
     }
-    header>h2{
-        font-size: 36px;
-        text-align: center;
+    .header{
+        width: 690px;
         height: 88px;
-        line-height: 88px;
+        margin: 0 auto;
+    }
+    .header>div{
+        height: 88px;
+        width: 88px;
+        float: left;
         background-image: url("../../assets/images/person/left_arrow.png");
         background-repeat: no-repeat;
         background-size: 26px 40px;
         background-position-y: 20px;
+    }
+    .header>h2{
+        font-size: 36px;
+        text-align: center;
+        height: 88px;
+        line-height: 88px;
+        float: left;
+        margin-left: 200px;
     }
     .info{
         width: 720px;

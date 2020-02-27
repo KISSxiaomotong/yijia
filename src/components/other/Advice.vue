@@ -2,6 +2,7 @@
     <div id="advice">
         <header>
             <div class="header">
+                <div @click="back()"></div>
                 <h2>投诉建议</h2>
             </div>
         </header>
@@ -10,7 +11,7 @@
         </div>
         <div class="fill"></div>
         <div class="entry">
-            <input type="text" placeholder="输入你的手机号码（非必填）" v-model="phon">
+            <input type="text" placeholder="输入你的手机号码（非必填）" v-model="phone">
         </div>
         <div class="submit">
             <input type="button" value="提交" @click="publish()">
@@ -29,7 +30,18 @@
             }
         },
         methods:{
+            back(){
+                this.$router.go(-1);//返回上一层
+            },
             publish: async function (){
+                if(this.details == ""){
+                    Toast("请详细描述您的问题！");
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    Toast('手机号格式不正确');
+                    return false;
+                }
                 let res = await this.post('request/add', {
                     "type":3,"phone":this.phone,"details":this.details
                 });
@@ -40,7 +52,6 @@
                 }
             }
         }
-
     }
 </script>
 
@@ -59,15 +70,22 @@
         height: 88px;
         margin: 0 auto;
     }
+    .header>div{
+        height: 88px;
+        width: 88px;
+        float: left;
+        background-image: url("../../assets/images/person/left_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 26px 40px;
+        background-position-y: 20px;
+    }
     .header>h2{
         font-size: 36px;
         text-align: center;
         height: 88px;
         line-height: 88px;
-        background-image: url("../../assets/images/person/left_arrow.png");
-        background-repeat: no-repeat;
-        background-size: 26px 40px;
-        background-position-y: 20px;
+        float: left;
+        margin-left: 200px;
     }
     .entry{
         width: 690px;
@@ -77,6 +95,7 @@
     .entry>input{
         width: 690px;
         height: 50px;
+        font-size: 28px;
         margin: 25px 0;
     }
     .entry>input::-webkit-input-placeholder{
@@ -96,6 +115,7 @@
     .description>textarea{
         width: 690px;
         height: 260px;
+        font-size: 28px;
         margin: 36px auto 34px;
     }
     .description>textarea::-webkit-input-placeholder{

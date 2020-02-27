@@ -2,6 +2,7 @@
     <div id="consultant">
         <header>
             <div class="header">
+                <div @click="back()"></div>
                 <h2>咨询师</h2>
             </div>
         </header>
@@ -37,6 +38,9 @@
             }
         },
         methods:{
+            back(){
+                this.$router.go(-1);//返回上一层
+            },
             fetchData: async function (){
                 let res = await this.post('expert/selbyid',{"id":this.id});
                 this.detail = res.data.data;
@@ -63,15 +67,22 @@
         height: 88px;
         margin: 0 auto;
     }
+    .header>div{
+        height: 88px;
+        width: 88px;
+        float: left;
+        background-image: url("../../assets/images/person/left_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 26px 40px;
+        background-position-y: 20px;
+    }
     .header>h2{
         font-size: 36px;
         text-align: center;
         height: 88px;
         line-height: 88px;
-        background-image: url("../../assets/images/person/left_arrow.png");
-        background-repeat: no-repeat;
-        background-size: 26px 40px;
-        background-position-y: 20px;
+        float: left;
+        margin-left: 200px;
     }
     .top{
         width: 750px;

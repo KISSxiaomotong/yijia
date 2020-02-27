@@ -8,6 +8,7 @@ import Mydata from '../../components/person/Mydata';
 import HouseSearch from '../../components/house/HouseSearch';
 import HouseDynamic from '../../components/house/HouseDynamic';
 import HouseStory from '../../components/house/HouseStory';
+import StoryDetail from '../../components/house/StoryDetail';
 import DynamicDetail from '../../components/house/DynamicDetail';
 import HouseDetail from '../../components/house/HouseDetail';
 import PreInfo from '../../components/house/PreInfo';
@@ -32,15 +33,16 @@ import Forget from '../../components/person/Forget';
 Vue.use(Router) //使用vue-router
 
 export default new Router({
-    mode: 'history',
     routes:[
         { path: "/", name: "index", component: Index},
+        { path: "/index", name: "index", component: Index},
         { path: "/center", name: "center", component: Center},
         { path: "/coupon", name: "coupon", component: Coupon},
         { path: "/mydata", name: "coupon", component: Mydata},
         { path: "/HouseSearch", name: "HouseSearch", component: HouseSearch},
         { path: "/HouseDynamic", name: "HouseDynamic", component: HouseDynamic},
         { path: "/HouseStory", name: "HouseStory", component: HouseStory},
+        { path: "/StoryDetail", name: "StoryDetail", component: StoryDetail},
         { path: "/HouseDetail", name: "HouseDetail", component: HouseDetail},
         { path: "/Preinfo", name: "PreInfo", component: PreInfo},
         { path: "/Help", name: "Help", component: Help},

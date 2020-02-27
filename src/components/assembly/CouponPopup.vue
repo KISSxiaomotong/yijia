@@ -4,22 +4,25 @@
             <div @click="couponClose()"></div>
         </div>
         <div class="middle">
-            <h3>300</h3>
-            <h2>华润万家购物卡</h2>
+            <h3>{{coupon.title}}</h3>
+            <h2>{{coupon.label}}</h2>
         </div>
         <div class="bottom">
-            <input type="text" placeholder="输入你的手机号码">
-            <input type="button" value="立即领取">
+            <input type="text" placeholder="输入你的手机号码" v-model="phone">
+            <input type="button" value="立即领取" @click="receive()">
         </div>
     </div>
 </template>
 
 <script>
+    import { Toast } from 'vant';
     export default {
         name: "CouponPopup",
         data(){
             return{
-                couponShow: false
+                couponShow: false,
+                coupon: {},
+                phone: ""
             }
         },
         methods:{
@@ -28,7 +31,32 @@
             },
             couponOpen(){
                 this.couponShow = true;
+            },
+            fetchData: async function (){
+                let res = await this.post('home/coupom');
+                this.coupon = res.data.data;
+            },
+            receive: async function (){
+                if (!this.phone) {
+                    Toast('手机号不能为空！');
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    Toast('手机号格式不正确！');
+                    return false;
+                }
+                let res = await this.post('userCoupon/receive', {"phone":this.phone,"cid":this.coupon.id,"pid":0});
+                if(res.data.code === 200){
+                    Toast("领取成功！");
+                    this.closeCoupon();
+                }else{
+                    Toast("已经领取过了！");
+                    this.closeCoupon();
+                }
             }
+        },
+        mounted() {
+            this.fetchData();
         }
     }
 </script>

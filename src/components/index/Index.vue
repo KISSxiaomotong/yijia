@@ -1,12 +1,12 @@
 <template>
     <div id="index">
         <div class="header">
-            <div class="down"><p>南昌</p><span></span></div>
+            <div class="down"><p>南昌</p></div>
             <span class="user" @click="center()">
                 <img src="../../assets/images/user.png" />
             </span>
             <div class="input">
-                <input type="input" placeholder="请输入楼盘名或区域名">
+                <input type="text" placeholder="请输入楼盘名或区域名" v-model="name" @keyup="search($event)">
             </div>
         </div>
         <div class="icon">
@@ -26,136 +26,63 @@
         <div class="news">
            <img src="../../assets/images/material/news.jpg">
             <ul>
-                <li><router-link to="#">2020年房地产政策和市场展望</router-link></li>
-                <li><router-link to="#">世茂APM怎么样 世茂APM项目实测</router-link></li>
+                <li v-for="(item,index) in news" :key="index"><router-link :to="{path:'/NewsDetail',query: {id: item.id}}">{{item.title}}</router-link></li>
             </ul>
         </div>
         <div class="recommend" ref="comment">
             <div class="recommend_title">
                 <h2>品质推荐</h2>
-                <router-link to="#"><h3>更多楼盘</h3></router-link>
+                <router-link to="/HouseSearch"><h3>更多楼盘</h3></router-link>
             </div>
-            <div class="recommend_content" ref="slide" :style="slideStyle" @touchstart="start($event)" @touchmove="move($event)" @touchend="end()">
-                <div>
+            <div class="recommend_content" ref="slide" :style="slideStyle">
+                <div v-for="(item,index) in recommend" :key="index" @click="toHouse(item.id)">
                     <div class="position">
-                        <img src="../../assets/images/material/test1.jpg">
+                        <img :src="item.cover">
                         <p>优质推荐</p>
                     </div>
-                    <h3>卓越万科翡翠山晓</h3>
-                    <span>40-122㎡</span>
-                    <p>10500<span>元/m²</span></p>
-                </div>
-                <div>
-                    <div class="position">
-                        <img src="../../assets/images/material/test2.jpg">
-                        <p>优质推荐</p>
-                    </div>
-                    <h3>卓越万科翡翠山晓</h3>
-                    <span>40-122㎡</span>
-                    <p>10500<span>元/m²</span></p>
-                </div>
-                <div>
-                    <div class="position">
-                        <img src="../../assets/images/material/test2.jpg">
-                        <p>优质推荐</p>
-                    </div>
-                    <h3>卓越万科翡翠山晓</h3>
-                    <span>40-122㎡</span>
-                    <p>10500<span>元/m²</span></p>
-                </div>
-                <div>
-                    <div class="position">
-                        <img src="../../assets/images/material/test1.jpg">
-                        <p>优质推荐</p>
-                    </div>
-                    <h3>卓越万科翡翠山晓</h3>
-                    <span>40-122㎡</span>
-                    <p>10500<span>元/m²</span></p>
-                </div>
-                <div>
-                    <div class="position">
-                        <img src="../../assets/images/material/test1.jpg">
-                        <p>优质推荐</p>
-                    </div>
-                    <h3>卓越万科翡翠山晓</h3>
-                    <span>40-122㎡</span>
-                    <p>10500<span>元/m²</span></p>
+                    <h3>{{item.title}}</h3>
+                    <span>{{Math.round(item.areaMin)}}-{{Math.round(item.areaMax)}}㎡</span>
+                    <p>{{item.unitPriceMin}}<span>万元/m²</span></p>
                 </div>
             </div>
         </div>
-        <div class="house">
+        <div class="house" ref="houses">
             <div class="house_title">
                 <h2>一房一价</h2>
-                <router-link to="#"><h3>更多楼盘</h3></router-link>
+                <router-link to="/HouseSearch"><h3>更多楼盘</h3></router-link>
             </div>
             <div class="house_select">
                 <van-dropdown-menu>
-                    <van-dropdown-item title="区域" :options="region" />
-                    <van-dropdown-item title="类型" :options="type" />
-                    <van-dropdown-item title="面积" :options="area" />
+                    <van-dropdown-item v-model="checkedPriceArea" :options="priceArea" @change="changePriceArea()" />
+                    <van-dropdown-item v-model="checkedPriceApartment" :options="priceApartment" @change="changePriceApartment()"/>
+                    <van-dropdown-item v-model="checkedPriceScreen" :options="priceScreen" @change="changePriceScreen()"/>
                 </van-dropdown-menu>
             </div>
-            <div class="house_content" ref="house" :style="houseStyle" @touchstart="dostart($event)" @touchmove="domove($event)" @touchend="doend()">
-                <div>
+            <div class="house_content" ref="house" :style="houseStyle">
+                <div v-for="(item,index) in price" :key="index" @click="toHouse(item.id)">
                     <div class="position">
-                        <img src="../../assets/images/material/test1.jpg">
+                        <img :src="item.cover">
                         <p>优质推荐</p>
                     </div>
-                    <h3>卓越万科翡翠山晓</h3>
-                    <span>40-122㎡</span>
-                    <p>10500<span>元/m²</span></p>
-                </div>
-                <div>
-                    <div class="position">
-                        <img src="../../assets/images/material/test2.jpg">
-                        <p>优质推荐</p>
-                    </div>
-                    <h3>卓越万科翡翠山晓</h3>
-                    <span>40-122㎡</span>
-                    <p>10500<span>元/m²</span></p>
-                </div>
-                <div>
-                    <div class="position">
-                        <img src="../../assets/images/material/test2.jpg">
-                        <p>优质推荐</p>
-                    </div>
-                    <h3>卓越万科翡翠山晓</h3>
-                    <span>40-122㎡</span>
-                    <p>10500<span>元/m²</span></p>
-                </div>
-                <div>
-                    <div class="position">
-                        <img src="../../assets/images/material/test1.jpg">
-                        <p>优质推荐</p>
-                    </div>
-                    <h3>卓越万科翡翠山晓</h3>
-                    <span>40-122㎡</span>
-                    <p>10500<span>元/m²</span></p>
-                </div>
-                <div>
-                    <div class="position">
-                        <img src="../../assets/images/material/test1.jpg">
-                        <p>优质推荐</p>
-                    </div>
-                    <h3>卓越万科翡翠山晓</h3>
-                    <span>40-122㎡</span>
-                    <p>10500<span>元/m²</span></p>
+                    <h3>{{item.title}}</h3>
+                    <span>{{Math.round(item.areaMin)}}-{{Math.round(item.areaMax)}}㎡</span>
+                    <p>{{item.unitPriceMin}}<span>万元/m²</span></p>
                 </div>
             </div>
         </div>
         <div class="consult">
             <div class="consult_top">
                 <h2>咨询师</h2>
-                <router-link to="#"><h3>查看更多</h3></router-link>
+                <router-link to="/Consult"><h3>查看更多</h3></router-link>
             </div>
             <div class="consult_middle">
                <div class="consult_content">
-                   <h4>宝音图<p>内蒙古财经大学</p></h4>
-                   <p>  “热爱地产，珍惜客户，提供优质服务， 我承诺我做到，做专业地产人”</p>
+                   <h4>{{consult.name}}<p>{{consult.university}}</p></h4>
+                   <p>{{consult.slogan}}</p>
                    <span>在线咨询</span>
                </div>
                 <div class="consult_image">
-                    <img src="../../assets/images/material/consult.jpg">
+                    <img :src="consult.headPortrait">
                 </div>
             </div>
             <div class="consult_bottom">
@@ -165,82 +92,27 @@
         <div class="build">
             <div class="build_title">
                 <h2>推荐楼盘</h2>
-                <router-link to="#"><h3>更多楼盘</h3></router-link>
+                <router-link to="/HouseSearch"><h3>更多楼盘</h3></router-link>
             </div>
             <div class="build_select">
                 <van-dropdown-menu>
-                    <van-dropdown-item title="区域" :options="test" />
-                    <van-dropdown-item title="价格" :options="test" />
-                    <van-dropdown-item title="户型" :options="test" />
-                    <van-dropdown-item title="筛选" :options="test" />
-                    <van-dropdown-item title="排序" :options="test" />
+                    <van-dropdown-item v-model="checkedHouseArea" :options="houseArea" @change="changeArea()"/>
+                    <van-dropdown-item v-model="checkedHousePrice" :options="housePrice" @change="changePrice()"/>
+                    <van-dropdown-item v-model="checkedHouseApartment" :options="houseApartment" @change="changeApartment()"/>
+                    <van-dropdown-item v-model="checkedHouseScreen" :options="houseScreen" @change="changeScreen()"/>
+                    <van-dropdown-item v-model="checkedHouseOrder" :options="houseOrder" @change="changeOrder()"/>
                 </van-dropdown-menu>
             </div>
             <div class="build_content">
-                <div>
+                <div v-for="(item,index) in house" :key="index" @click="toHouse(item.id)">
                     <div class="build_image">
-                        <img src="../../assets/images/material/test1.jpg">
+                        <img :src="item.cover">
                     </div>
                     <div class="build_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="build_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="build_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="build_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="build_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="build_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="build_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="build_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="build_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="build_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="build_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
+                        <h4>{{item.name}}<span>在售</span></h4>
+                        <p>地址：{{item.address}}</p>
+                        <h5>{{item.opening | dateFormat()}} · {{item.opening}}</h5>
+                        <h3>{{item.unitPriceMin}}<span>万元/m²</span><p>{{item.totalPriceMin}}-{{item.totalPriceMax}}㎡</p></h3>
                     </div>
                 </div>
             </div>
@@ -265,8 +137,11 @@
         },
         data (){
             return {
+                name: "",
+                notLogin: this.$route.query.notLogin,
                 //滑动属性
-                border: 0,
+                commentBorder: 0,
+                housesBorder: 0,
                 positionX: 0,
                 startX: 0,
                 endX: 0,
@@ -281,32 +156,133 @@
                     left: 0,
                     transition: 'none'
                 },
-                region: [
-                    { text: '南昌', value: '南昌' },
-                    { text: '北京', value: '北京' },
-                    { text: '上海', value: '上海' },
-                    { text: '广州', value: '广州' }
+                houseArea: [],
+                priceArea: [],
+                housePrice: [
+                    { text: '价格', value: '0,2000'},
+                    { text: '<200万', value: '0,200'},
+                    { text: '200-400万', value: '200,400'},
+                    { text: '400-500万', value: '400,500'},
+                    { text: '500-600万', value: '500,600'},
+                    { text: '600-800万', value: '600,800'},
+                    { text: '800-1000万', value: '800,1000'},
+                    { text: '1000-2000万', value: '1000,2000'}
                 ],
-                type: [
-                    { text: '两室一厅', value: '两室一厅' },
-                    { text: '三室一厅', value: '三室一厅' },
-                    { text: '三室两厅', value: '三室两厅' },
+                houseApartment: [
+                    { text: '户型', value: 0},
+                    { text: '一居', value: 1},
+                    { text: '二居', value: 2},
+                    { text: '三居', value: 3},
+                    { text: '四居', value: 4},
+                    { text: '五居及以上', value: 5},
                 ],
-                area: [
-                    { text: '40-80㎡', value: '40-80㎡' },
-                    { text: '80-120㎡', value: '80-120㎡' },
-                    { text: '120-200㎡', value: '120-200㎡'},
+                priceApartment: [
+                    { text: '户型', value: 0},
+                    { text: '一居', value: 1},
+                    { text: '二居', value: 2},
+                    { text: '三居', value: 3},
+                    { text: '四居', value: 4},
+                    { text: '五居及以上', value: 5},
                 ],
-                test: [
-                    { text: '测试1', value: '测试1' },
-                    { text: '测试2', value: '测试2' },
-                    { text: '测试3', value: '测试3'},
+                houseScreen: [
+                    { text: '面积', value: '0,2000'},
+                    { text: '<50m²', value: '0,50'},
+                    { text: '50-80m²', value: '50,80'},
+                    { text: '80-120m²', value: '80,120'},
+                    { text: '120-140m²', value: '120,140'},
+                    { text: '140-160m²', value: '140,160'},
+                    { text: '>160m²', value: '160,2000'}
                 ],
-                lists: {}
+                priceScreen: [
+                    { text: '面积', value: '0,2000'},
+                    { text: '<50m²', value: '0,50'},
+                    { text: '50-80m²', value: '50,80'},
+                    { text: '80-120m²', value: '80,120'},
+                    { text: '120-140m²', value: '120,140'},
+                    { text: '140-160m²', value: '140,160'},
+                    { text: '>160m²', value: '160,2000'}
+                ],
+                houseOrder: [
+                    { text: '排序', value: 0},
+                    { text: '总价排序', value: 1},
+                    { text: '单价排序', value: 2},
+                    { text: '时间排序', value: 3},
+                ],
+                checkedHouseArea: 0,
+                checkedPriceArea: 0,
+                checkedHousePrice: '0,2000',
+                checkedHouseApartment: 0,
+                checkedPriceApartment: 0,
+                checkedHouseScreen: '0,2000',
+                checkedPriceScreen: '0,2000',
+                checkedHouseOrder: 0,
+
+                recommend: [],
+                price: [],
+                consult: {},
+                house: [],
+                news: {}
             }
         },
         methods: {
-            start (e){
+            changeArea: async function (){
+                let res = await this.post('properties/selpage', {"current":1,"num":6,"regionId":this.checkedHouseArea});
+                this.house = res.data.data.objs;
+            },
+            changePrice: async function (){
+                let price = this.checkedHousePrice;
+                price = price.split(",");
+                let unitPriceMin = price[0];
+                let unitPriceMax = price[1];
+                let res = await this.post('properties/selpage', {"current":1,"num":6,"unitPriceMin":unitPriceMin,"unitPriceMax":unitPriceMax});
+                this.house = res.data.data.objs;
+            },
+            changeApartment: async function (){
+                let res = await this.post('properties/selpage', {"current":1,"num":6,"hxing":this.checkedHouseApartment});
+                this.house = res.data.data.objs;
+            },
+            changeScreen: async function (){
+                let screen = this.checkedHouseScreen;
+                screen = screen.split(",");
+                let unitAreaMin = screen[0];
+                let unitAreaMax = screen[1];
+                let res = await this.post('properties/selpage', {"current":1,"num":6,"unitAreaMin":unitAreaMin,"unitAreaMax":unitAreaMax});
+                this.house = res.data.data.objs;
+            },
+            changeOrder: async function (){
+                let order = this.checkedHouseOrder;
+                if(order == 0){
+                    let res = await this.post('properties/selpage', {"current":1,"num":6});
+                    this.house = res.data.data.objs;
+                }else if(order == 1){
+                    let res = await this.post('properties/selpage', {"current":1,"num":6,"totalIsAsc": true});
+                    this.house = res.data.data.objs;
+                }else if(order == 2){
+                    let res = await this.post('properties/selpage', {"current":1,"num":6,"unitIsAsc": true});
+                    this.house = res.data.data.objs;
+                }else if(order == 3){
+                    let res = await this.post('properties/selpage', {"current":1,"num":6,"cdateIsAsc": true});
+                    this.house = res.data.data.objs;
+                }
+
+            },
+            changePriceArea: async function(){
+                let res = await this.post('properties/selpage', {"current":1,"num":4,"regionId":this.checkedPriceArea});
+                this.price = res.data.data.objs;
+            },
+            changePriceApartment: async function(){
+                let res = await this.post('properties/selpage', {"current":1,"num":4,"hxing":this.checkedPriceApartment});
+                this.price = res.data.data.objs;
+            },
+            changePriceScreen: async function(){
+                let screen = this.checkedHouseScreen;
+                screen = screen.split(",");
+                let unitAreaMin = screen[0];
+                let unitAreaMax = screen[1];
+                let res = await this.post('properties/selpage', {"current":1,"num":4,"unitAreaMin":unitAreaMin,"unitAreaMax":unitAreaMax});
+                this.price = res.data.data.objs;
+            },
+           /* start (e){
                 this.startX = e.touches[0].clientX;
                 this.endX = this.$refs.slide.offsetLeft;
                 this.slideStyle.transition = 'none';
@@ -316,10 +292,10 @@
                 this.positionX = moveX;
                 if(this.positionX == 0 && moveX< 0){
                     this.slideStyle.left = moveX + 'px';
-                }else if(this.positionX > this.border && this.positionX < 0 && moveX < 0){
+                }else if(this.positionX > this.commentBorder && this.positionX < 0 && moveX < 0){
                     this.slideStyle.left = moveX + 'px';
-                }else if(this.positionX <= this.border && (e.touches[0].clientX - this.startX) > 0){
-                    this.slideStyle.left = this.border + 'px';
+                }else if(this.positionX <= this.commentBorder && (e.touches[0].clientX - this.startX) > 0){
+                    this.slideStyle.left = this.commentBorder + 'px';
                 }
             },
             end (){
@@ -334,16 +310,19 @@
                 let moveH = this.endH + (e.touches[0].clientX - this.startH);  //计算滑动的距离
                 this.positionH = moveH;
                 if(this.positionH == 0 && moveH< 0){
+                    console.log(1);
                     this.houseStyle.left = moveH + 'px';
-                }else if(this.positionH > this.border && this.positionH < 0 && moveH < 0){
+                }else if(this.positionH > this.housesBorder && this.positionH < 0 && moveH < 0){
+                    console.log(2);
                     this.houseStyle.left = moveH + 'px';
-                }else if(this.positionH <= this.border && (e.touches[0].clientX - this.startH) > 0){
-                    this.houseStyle.left = this.border + 'px';
+                }else if(this.positionH <= this.housesBorder && (e.touches[0].clientX - this.startH) > 0){
+                    console.log(3);
+                    this.houseStyle.left = this.housesBorder + 'px';
                 }
             },
             doend (){
                 this.houseStyle.transition = 'left .3s';
-            },
+            },*/
             openCoupon(){
                 let coupon = window.localStorage.getItem('coupon');
                 if(coupon !== "coupon"){
@@ -381,22 +360,116 @@
             },
             fetchData: async function (){
                 let res = await this.post('home/byphone');
-                this.lists = res.data.data.objs;
+                res = res.data.data;
+                let recommend = res.yztj;
+                if(recommend.length >= 5){
+                    for (let i=0;i<4;i++){
+                        this.recommend.push(recommend[i]);
+                    }
+                }else{
+                    this.recommend = recommend;
+                }
+                //计算宽度
+                if(this.recommend.length <= 2){
+                    this.slideStyle.width = "690px";
+                }else{
+                    let slideWidth = 300 * this.recommend.length + 20*(this.recommend.length-1);
+                    this.slideStyle.width = slideWidth + "px";
+                }
+                let price = res.yfyj;
+                if(price.length >= 5){
+                    for (let i=0;i<5;i++){
+                        this.price.push(price[i]);
+                    }
+                }else{
+                    this.price = price;
+                }
+                //计算宽度
+                if(this.price.length <= 2){
+                    this.houseStyle.width = "690px";
+                }else{
+                    let houseWidth = 1600;
+                    this.houseStyle.width = houseWidth + "px";
+                }
+                this.consult = res.zxs[0];
+                let house = res.tj;
+                if(house.length >= 6){
+                    for (let i=0;i<6;i++){
+                        this.house.push(house[i]);
+                    }
+                }else{
+                    this.house = house;
+                }
+                this.news = res.zx;
+            },
+            search: async function (event){
+                if(event.keyCode == 13){
+                    if(this.name != ""){
+                        this.$router.push({
+                            path:'/HouseSearch',
+                            query:{
+                                name:this.name
+                            }
+                        });
+                    }
+                }
+            },
+            fetchArea: async function (){
+                let res = await this.post('region/selpage');
+                let area = [
+                    {"text":"区域","value": 0}
+                ];
+                res = res.data.data[0].children;
+                Object.keys(res).forEach(function(key){
+                    area.push({"text":res[key].name,"value":res[key].id});
+                });
+                this.houseArea = area;
+            },
+            fetchPriceArea: async function (){
+                let res = await this.post('region/selpage');
+                let area = [
+                    {"text":"区域","value": 0}
+                ];
+                res = res.data.data[0].children;
+                Object.keys(res).forEach(function(key){
+                    area.push({"text":res[key].name,"value":res[key].id});
+                });
+                this.priceArea = area;
+            },
+            toHouse(id){
+                this.$router.push({
+                    path: "/SearchDetail",
+                    query: {
+                        id:id
+                    }
+                });
+            },
+            ejectLogin(){
+                if(this.notLogin == true){
+                    this.closeCoupon();
+                    this.toLogin();
+                }
             }
         },
         mounted (){
             this.openCoupon();
-            //计算边界
-            this.border = this.$refs.comment.clientWidth - this.$refs.slide.clientWidth;
+            this.fetchData();
+            this.fetchArea();
+            this.fetchPriceArea();
+            this.ejectLogin();
             // 使用js的现代事件监听transition过渡结束
-            let _this = this;
+            /*let _this = this;
             this.$refs.slide.addEventListener('transitionend',function(){
                 _this.endX = this.offsetLeft;
             });
             this.$refs.house.addEventListener('transitionend',function(){
                 _this.endH = this.offsetLeft;
-            });
-            this.fetchData();
+            });*/
+        },
+        filters:{
+            dateFormat(datestr){
+                return datestr.replace(/-/g,"");
+            }
         }
     }
 </script>
@@ -426,6 +499,11 @@
     .down>p{
         line-height: 52px;
         padding:2px 0 0 18px;
+        background-image: url("../../assets/images/bottom_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 21px 12px;
+        background-position-x: 72px;
+        background-position-y: 20px;
     }
     .user{
         float: right;
@@ -644,7 +722,6 @@
         border:none;
     }
     .house_content{
-        width: 1600px;
         position: absolute;
         top: 160px;
     }

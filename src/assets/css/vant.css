@@ -30,3 +30,7 @@
     text-align: center;
     background-color: #39a9ed;
 }
+.van-toast__text{
+    height: 36px;
+    line-height: 36px;
+}

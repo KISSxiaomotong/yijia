@@ -2,8 +2,9 @@
     <div id="search">
         <header>
             <div class="header">
-                <h2>合一中央城</h2>
-                <img src="../../assets/images/house/user.png">
+                <div class="back" @click="back()"></div>
+                <h2>{{properties.name}}</h2>
+                <img src="../../assets/images/house/user.png" @click="center()">
             </div>
         </header>
         <div class="swipe">
@@ -41,11 +42,11 @@
         </div>
         <div class="get">
             <div class="get_left">
-                <p><span>益家专享</span>合一中央城专享</p>
-                <h3>总价立减2万</h3>
+                <p><span>{{coupon.label}}</span>{{coupon.title}}</p>
+                <h3>{{coupon.body}}</h3>
             </div>
             <div class="get_right">
-                <input type="button" value="立即领取">
+                <input type="button" value="立即领取" @click="getCoupon()">
             </div>
         </div>
         <div class="fill"></div>
@@ -56,8 +57,8 @@
                     <p>楼盘名称：<span>{{properties.name}}</span></p>
                     <p>参考总价：<span>{{properties.unitPriceMin}}-{{properties.unitPriceMax}}万元</span></p>
                     <p>参考单价：<span>{{properties.totalPriceMin}}万元/m²起</span></p>
-                    <p>物业类型：<span>住宅</span></p>
-                    <p>户型：<span>二居(6)，三居(8)</span></p>
+                    <p>物业类型：<span>{{type}}</span></p>
+                    <p>户型：<span>{{apartment}}</span></p>
                     <p>建筑面积：<span>{{Math.round(properties.areaMin)}}-{{Math.round(properties.areaMax)}}m²</span></p>
                     <h4>楼盘地址：<span>{{properties.address}}</span></h4>
                 </div>
@@ -82,16 +83,16 @@
         <div class="dynamic">
             <div class="dynamic_title">
                 <h2>楼盘动态</h2>
-                <router-link to="#"><h3>全部动态</h3></router-link>
+                <router-link to="/HouseDynamic"><h3>全部动态</h3></router-link>
             </div>
             <div class="dynamic_content" v-for="(item,index) in propertiesDynamics" :key="index">
                 <div class="dynamic_left">
-                    <h3>新年伊始央行降准，股市行情将继续？</h3>
-                    <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准...</p>
-                    <span>2020-01-02</span>
+                    <h3>{{item.title}}</h3>
+                    <p>{{item.represent}}</p>
+                    <span>{{item.cdate}}</span>
                 </div>
                 <div class="dynamic_right">
-                    <img src="../../assets/images/material/dynamic.png">
+                    <img :src="item.picture">
                 </div>
             </div>
         </div>
@@ -99,14 +100,14 @@
         <div class="map">
             <div class="map_top">
                 <h2>周边配套</h2>
-                <h3><span>位置：</span>青山湖大道地铁口</h3>
-                <p>距离南昌站4公里</p>
+                <h3><span>位置：</span>{{location}}</h3>
+                <p>距离南昌站{{distance}}公里</p>
             </div>
             <div class="map_middle" id="container">
             </div>
             <div class="map_bottom">
                 <ul class="map_title">
-                    <li v-for="(item,index) in facilities" :key="index" @click="change(index)" :class="{active:index == now}">{{item}}(3)</li>
+                    <li v-for="(item,index) in facilities" :key="index" @click="change(index)" :class="{active:index == now}">{{item.title}}({{item.count}})</li>
                 </ul>
                 <ul class="map_around">
                     <li v-for="(item,index) in result" :key="index"><p>{{item.title}}<span>({{item.address}})</span></p><span>{{item.distance}}m</span></li>
@@ -121,9 +122,9 @@
             </div>
             <div class="comment_top">
                 <div class="comment_left">
-                    <img src="../../assets/images/material/avatar.jpg">
-                    <h4>刘小海</h4>
-                    <p>2020-01-02</p>
+                    <img :src="expertComment.headPortrait">
+                    <h4>{{expertComment.name}}</h4>
+                    <p>{{expertComment.cdate}}</p>
                 </div>
                 <div class="comment_right">
                     <input type="button" value="沟通" id="communicate">
@@ -131,7 +132,7 @@
                 </div>
             </div>
             <div class="comment_middle">
-                <p>该项目位于项目位于通州永乐店漷小路和恒业二街交叉口，在售户型建面77-89平两居或三居。均价37000-38000（2018年10月15日）. 项目优势： 1、交通：道路交通有京沪高速，京津高速，永开路。2023年即将开通地铁23号线...</p>
+                <p>{{expertComment.comment}}</p>
             </div>
             <div class="comment_bottom">
                 <span>展开全文</span>
@@ -143,25 +144,14 @@
                 <h2>用户点评</h2>
                 <router-link to="#"><h3>全部点评</h3></router-link>
             </div>
-            <div class="user_info">
+            <div class="user_info" v-for="(item,index) in userComment" :key="index">
                 <div class="user_left">
-                    <img src="../../assets/images/material/avatar.jpg">
+                    <img :src="item.obj.headPortrait">
                 </div>
                 <div class="user_right">
-                    <h4>用户11054198</h4>
-                    <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                    <span>2020-01-02</span>
-                </div>
-                <div class="clear"></div>
-            </div>
-            <div class="user_info">
-                <div class="user_left">
-                    <img src="../../assets/images/material/avatar.jpg">
-                </div>
-                <div class="user_right">
-                    <h4>用户11054198</h4>
-                    <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                    <span>2020-01-02</span>
+                    <h4>{{item.obj.name}}</h4>
+                    <p>{{item.comment}}</p>
+                    <span>{{item.obj.cdate | dateSub()}}</span>
                 </div>
                 <div class="clear"></div>
             </div>
@@ -174,7 +164,7 @@
         <div class="question">
             <div class="question_title">
                 <h2>楼盘问问</h2>
-                <router-link to="#"><h3>全部问问</h3></router-link>
+                <router-link to="/Asking"><h3>全部问问</h3></router-link>
             </div>
             <div class="question_content">
                 <div class="ask" v-for="(item,index) in propertiesWws" :key="index">
@@ -183,16 +173,16 @@
             </div>
             <div class="question_comment">
                 <img src="../../assets/images/write.png">
-                <p>我要提问</p>
+                <p @click="answer()">我要提问</p>
             </div>
         </div>
         <div class="fill"></div>
         <div class="consult">
             <div class="consult_title">
                 <h2>咨询师</h2>
-                <router-link to="#"><h3>全部咨询师</h3></router-link>
+                <router-link to="/Consult"><h3>全部咨询师</h3></router-link>
             </div>
-            <div class="consult_content" v-for="(item,index) in experts" :key="index">
+            <div class="consult_content" v-for="(item,index) in experts" :key="index" @click="consult(item.id)">
                 <div class="consult_left">
                     <img :src="item.headPortrait">
                     <h4>{{item.name}}</h4>
@@ -207,67 +197,9 @@
         <div class="price">
             <div class="price_title">
                 <h2>一房一价</h2>
-                <router-link to="#"><h3>更多信息</h3></router-link>
+                <router-link :to="{path:'/PreInfo',query: {id: id}}"><h3>更多信息</h3></router-link>
             </div>
-            <div class="pre">
-                <table>
-                    <tr>
-                        <td>公司名称</td>
-                        <td colspan="3">江西济泽置业有限公司</td>
-                    </tr>
-                    <tr>
-                        <td>项目名称</td>
-                        <td colspan="3">鸿海城</td>
-                    </tr>
-                    <tr>
-                        <td>预售许可证</td>
-                        <td colspan="3">2019120</td>
-                    </tr>
-                    <tr>
-                        <td>售楼电话</td>
-                        <td colspan="3">13188888888</td>
-                    </tr>
-                    <tr>
-                        <td>土地来源</td>
-                        <td>买卖</td>
-                        <td>土地面积</td>
-                        <td>23456m2</td>
-                    </tr>
-                    <tr>
-                        <td>土地级别</td>
-                        <td>一级</td>
-                        <td>占地面积</td>
-                        <td>23006m2</td>
-                    </tr>
-                    <tr>
-                        <td>建筑面积</td>
-                        <td>20000m2</td>
-                        <td>容积率</td>
-                        <td>80%</td>
-                    </tr>
-                    <tr>
-                        <td>绿地率</td>
-                        <td>30%</td>
-                        <td>建筑密度</td>
-                        <td>19.68%</td>
-                    </tr>
-                    <tr>
-                        <td>工程投资</td>
-                        <td>15亿</td>
-                        <td>开工日期</td>
-                        <td>2015年8月8日</td>
-                    </tr>
-                    <tr>
-                        <td>竣工日期</td>
-                        <td>2020年1月1日</td>
-                        <td>施工单位</td>
-                        <td>中建三局</td>
-                    </tr>
-                    <tr>
-                        <td>测量单位</td>
-                        <td colspan="3">中国国土规划院</td>
-                    </tr>
-                </table>
+            <div class="pre" v-html="price">
             </div>
         </div>
         <div class="fill"></div>
@@ -276,48 +208,15 @@
                 <h2>推荐楼盘</h2>
             </div>
             <div class="recommend_content">
-                <div v-for="(item,index) in propertiesList" :key="index">
+                <div v-for="(item,index) in propertiesList" :key="index" @click="house(item.id)">
                     <div class="recommend_image">
                         <img :src="item.cover">
                     </div>
                     <div class="recommend_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
+                        <h4>{{item.name}}<span>在售</span></h4>
                         <p>地址：{{item.address}}</p>
-                        <h5>2019120 · {{item.cdate}}</h5>
+                        <h5>{{item.opening | dateFormat()}} · {{item.opening | dateSub()}}</h5>
                         <h3>{{item.unitPriceMin}}<span>万元/m²</span><p>{{item.areaMin}}-{{item.areaMax}}㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="recommend_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="recommend_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="recommend_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="recommend_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="recommend_image">
-                        <img src="../../assets/images/material/test1.jpg">
-                    </div>
-                    <div class="recommend_detail">
-                        <h4>卓越万科翡翠山晓<span>在售</span></h4>
-                        <p>住宅 · 江西省南昌市湾里区规划三路</p>
-                        <h5>2019120 · 2019-12-30</h5>
-                        <h3>10500<span>元/m²</span><p>40-122㎡</p></h3>
                     </div>
                 </div>
             </div>
@@ -326,16 +225,22 @@
             <div class="service">
                 <h4>在线客服</h4>
             </div>
-            <input type="text" id="see" value="预约看房">
-            <input type="text" id="consult" value="电话咨询">
+            <input type="button" id="see" value="预约看房" @click="appointment()">
+            <input type="button" id="consult" value="电话咨询">
         </div>
+        <Login ref="login" @toRegister="toRegister"></Login>
+        <Register ref="register"  @toLogin="toLogin"></Register>
     </div>
 </template>
 
 <script>
+    import { Toast } from 'vant';
+    import Login from "../person/Login";
+    import Register from "../person/Register";
     import BMap from 'BMap';
     export default {
         name: "SearchDetail",
+        components: {Login,Register},
         data(){
             return{
                 id:this.$route.query.id,
@@ -350,24 +255,42 @@
                 point: null,
                 MyMarker: null,
                 result: [],
-                facilities: ["公交","地铁","教育","医院","银行","购物"],
+                facilities: [
+                    {"title":"公交","count":0},
+                    {"title":"地铁","count":0},
+                    {"title":"教育","count":0},
+                    {"title":"医院","count":0},
+                    {"title":"银行","count":0},
+                    {"title":"购物","count":0}
+                ],
                 images: [],
                 properties: {},
                 label: [],
                 houseShapes: {},
-                propertiesDynamics:{},
+                propertiesDynamics: [],
                 propertiesWws: {},
                 experts: {},
-                propertiesList: {}
+                propertiesList: [],
+                expertComment: [],
+                userComment: [],
+                price: "",
+                location: "",
+                distance: 0,
+                type: "",
+                apartment: "",
+                coupon:{}
             }
         },
         methods:{
+            back(){
+                this.$router.go(-1);//返回上一层
+            },
             onChange(index) {
                 this.current = index;
             },
             change(index){
                 this.now = index;
-                this.Search(this.facilities[index],this.point);
+                this.Search(this.facilities[index].title,this.point);
             },
             createMap(){
                 this.map = new BMap.Map("container");
@@ -425,6 +348,7 @@
                 this.result = lists;
             },
             fetchData: async function (){
+                let that = this;
                 let res = await this.post('properties/whole', {"id":this.id});
                 let images = [];
                 let detail = res.data.data;
@@ -433,18 +357,179 @@
                 });
                 this.images = images;
                 this.properties = detail.properties;
+                let type = this.properties.type.split(",");
+                let apartment = this.properties.hxing.split(",");
+                for (let i = 0; i < type.length; i ++){
+                    if(type[i] == 1){
+                        this.type = this.type + "一居 ";
+                    }
+                    if(type[i] == 2){
+                        this.type = this.type + "二居 ";
+                    }
+                    if(type[i] == 3){
+                        this.type = this.type + "三居 ";
+                    }
+                }
+                for (let i = 0; i < apartment.length; i ++){
+                    if(apartment[i] == 1){
+                        this.apartment = this.apartment + "住宅 ";
+                    }
+                    if(apartment[i] == 2){
+                        this.apartment = this.apartment + "别墅 ";
+                    }
+                    if(apartment[i] == 3){
+                        this.apartment = this.apartment + "商办 ";
+                    }
+                }
                 this.label = this.properties.label.split(",");
                 this.houseShapes = detail.houseShapes;
-                this.propertiesDynamics = detail.propertiesDynamics;
+                if(detail.propertiesDynamics.length > 2){
+                    for (let i=0;i<2;i++){
+                        this.propertiesDynamics.push(detail.propertiesDynamics[i]);
+                    }
+                }else{
+                    this.propertiesDynamics = detail.propertiesDynamics;
+                }
                 this.propertiesWws = detail.propertiesWws;
                 this.experts = detail.experts;
-                this.propertiesList = detail.propertiesList;
+                let propertiesList = detail.propertiesList;
+                if(propertiesList.length >= 6){
+                    for (let i=0;i<6;i++){
+                        this.propertiesList.push(propertiesList[i]);
+                    }
+                }else{
+                    this.propertiesList = propertiesList
+                }
+                let propertiesComments = detail.propertiesComments;
+                Object.keys(propertiesComments).forEach(function(key){
+                    if (propertiesComments[key].commentId == 1) {
+                        that.userComment.push(propertiesComments[key]);
+                    }else {
+                        that.expertComment.push(propertiesComments[key]);
+                    }
+                });
+                if (this.expertComment.length > 0){
+                    this.expertComment = this.expertComment[0];
+                    this.expertComment.headPortrait = this.expertComment.obj.headPortrait;
+                    this.expertComment.name = this.expertComment.obj.name;
+                    this.expertComment.cdate = this.expertComment.obj.cdate.substring(0,10);
+                }
+                this.price = detail.yfyj.represent;
+                this.coupon = detail.coupon;
+            },
+            setLocation(point){
+                let that = this;
+                let geoc = new BMap.Geocoder();
+                geoc.getLocation(point, function(rs){
+                    let addComp = rs.addressComponents;
+                    that.location = addComp.district + addComp.street + addComp.streetNumber;
+                });
+                let train = new BMap.Point(115.924589,28.668332);
+                let distance = this.map.getDistance(this.point,train);
+                this.distance = Math.round(distance/1000);
+            },
+            countNum(){
+                for (let i=0;i<6;i++) {
+                    this.getNum(this.facilities[i].title,this.point,i);
+                }
+            },
+            getNum(search,mPoint,index){
+                let options = {
+                    onSearchComplete: function(results){
+                        // 判断状态是否正确
+                        if (local.getStatus() == BMAP_STATUS_SUCCESS){
+                            let num = results.getCurrentNumPois();
+                            self.facilities[index].count = num;
+                        }else{
+                            self.facilities[index].count = 0;
+                        }
+                    },
+                };
+                let self = this;
+                self.map.clearOverlays();
+                self.circle = new BMap.Circle(mPoint,1000,{stroke:"white",strokeWeight: 1 ,fillOpacity: 0.3, strokeOpacity: 0.3});
+                self.map.addOverlay(self.circle);
+                let local =  new BMap.LocalSearch(self.map, options);
+                self.map.addOverlay(self.MyMarker);
+                local.searchNearby(search,mPoint,1000);
+            },
+            appointment(){
+                this.$router.push('/Appointment')
+            },
+            answer(){
+                this.$router.push('/Answer')
+            },
+            consult(id){
+                this.$router.push({
+                    path:'/Consultant',
+                    query:{
+                        id:id
+                    }
+                })
+            },
+            house(id){
+                this.$router.replace({
+                    path: "/SearchDetail",
+                    query: {
+                        id:id
+                    }
+                },()=>{
+                    this.$router.go(0)//刷新页面
+                })
+            },
+            center(){
+                let check = this.checkLogin();
+                if(check){
+                    this.$router.push('/Center');
+                }else{
+                    this.$refs.login.loginOpen();
+                }
+            },
+            checkLogin(){
+                let user = JSON.parse(window.localStorage.getItem('user'));
+                if(user){
+                    return true;
+                }else{
+                    return false;
+                }
+            },
+            toLogin(){
+                this.$refs.register.registerClose();
+                this.$refs.login.loginOpen();
+            },
+            toRegister(){
+                this.$refs.login.loginClose();
+                this.$refs.register.registerOpen();
+            },
+            getCoupon: async function (){
+                if(this.checkLogin()){
+                    let user = JSON.parse(window.localStorage.getItem('user'));
+                    let phone = user.phone;
+                    let res = await this.post('userCoupon/receive', {"phone": phone,"cid":this.coupon.id});
+                    if(res.data.code === 200){
+                        Toast("领取成功！");
+                    }else{
+                        Toast("已经领取过了！");
+                    }
+                }else{
+                    this.toLogin();
+                }
             }
         },
         mounted() {
             this.fetchData();
             this.createMap();
-            this.Search(this.facilities[0],this.point);
+            this.Search(this.facilities[0].title,this.point);
+            this.setLocation(this.point);
+            this.countNum();
+        },
+        filters:{
+            dateFormat(datestr){
+                return datestr.replace(/-/g,"");
+            },
+            dateSub(datestr){
+                return datestr.substring(0,10);
+            }
         }
     }
 </script>
@@ -464,17 +549,22 @@
         height: 88px;
         margin: 0 auto;
     }
+    .back{
+        height: 88px;
+        width: 88px;
+        float: left;
+        background-image: url("../../assets/images/person/left_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 26px 40px;
+        background-position: left center;
+    }
     .header>h2{
         font-size: 36px;
         text-align: center;
         height: 88px;
         line-height: 88px;
-        display: inline-block;
-        padding-left: 270px;
-        background-image: url("../../assets/images/person/left_arrow.png");
-        background-repeat: no-repeat;
-        background-size: 26px 40px;
-        background-position-y: 20px;
+        float: left;
+        padding-left: 182px;
     }
     .header>img{
         width: 36px;
@@ -850,10 +940,9 @@
         line-height: 70px;
     }
     .map_title>li{
-        width: 95px;
+        width: 115px;
         height: 60px;
         text-align: center;
-        margin: 0 10px;
         font-size: 28px;
         font-weight: 600;
         float: left;
@@ -1247,23 +1336,9 @@
         width: 690px;
         margin:  40px auto 0;
     }
-    .pre>table td{
-        width: 100px;
-        height: 100px;
-        border: 1px solid #e5e5e5;
-    }
-    .pre>table td{
-        width: 172px;
-        height: 90px;
-    }
-    .pre>table td:nth-child(2n+1){
-        font-size: 26px;
-        text-align: center;
-        background-color: #f9f9f9;
-    }
-    .pre>table td:nth-child(2n){
-        font-size: 26px;
-        padding-left: 20px;
+    .pre >>> img{
+        width: 690px;
+        height: 519px;
     }
     .recommend{
         width: 690px;

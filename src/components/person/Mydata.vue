@@ -2,28 +2,50 @@
     <div class="mydata">
         <header>
             <div class="header">
+                <div @click="back()"></div>
                 <h2>我的资料</h2>
             </div>
         </header>
-        <div class="image"><span>头像</span><img src="../../assets/images/material/avatar.jpg"></div>
-        <div class="nickname"><span>昵称</span><p>那些你很冒险的梦</p></div>
+        <div class="image"><span>头像</span><img :src="user.headPortrait"></div>
+        <div class="nickname"><span>昵称</span><p>{{user.userName}}</p></div>
         <div class="info">
             <ul>
-                <li><router-link to="#"><span>性别</span><p>女</p></router-link></li>
+                <li><router-link to="#"><span>性别</span><p>男</p></router-link></li>
                 <li><router-link to="#"><span>邮箱</span><p>未设置</p></router-link></li>
-                <li><router-link to="#"><span>真实姓名</span><p>周子凯</p></router-link></li>
-                <li><router-link to="#"><span>手机号</span><p>13199999999</p></router-link></li>
+                <li><router-link to="#"><span>真实姓名</span><p>未填写</p></router-link></li>
+                <li><router-link to="#"><span>手机号</span><p>{{user.phone}}</p></router-link></li>
             </ul>
         </div>
         <div class="layout">
-            <input type="button" value="退出登录">
+            <input type="button" value="退出登录" @click="layout()">
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "Mydata"
+        name: "Mydata",
+        data(){
+            return{
+                user:{}
+            }
+        },
+        methods:{
+            back(){
+                this.$router.go(-1);//返回上一层
+            },
+            getUser(){
+                let user = JSON.parse(window.localStorage.getItem('user'));
+                this.user = user;
+            },
+            layout(){
+                window.localStorage.removeItem('user');
+                this.$router.push('/');
+            }
+        },
+        mounted() {
+            this.getUser();
+        }
     }
 </script>
 
@@ -42,15 +64,22 @@
         height: 88px;
         margin: 0 auto;
     }
+    .header>div{
+        height: 88px;
+        width: 88px;
+        float: left;
+        background-image: url("../../assets/images/person/left_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 26px 40px;
+        background-position-y: 20px;
+    }
     .header>h2{
         font-size: 36px;
         text-align: center;
         height: 88px;
         line-height: 88px;
-        background-image: url("../../assets/images/person/left_arrow.png");
-        background-repeat: no-repeat;
-        background-size: 26px 40px;
-        background-position-y: 20px;
+        float: left;
+        margin-left: 200px;
     }
     .image{
         width: 690px;

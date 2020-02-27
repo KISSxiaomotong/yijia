@@ -2,6 +2,7 @@
     <div id="story">
         <header>
             <div class="header">
+                <div @click="back()"></div>
                 <h2>买房故事</h2>
             </div>
         </header>
@@ -19,7 +20,7 @@
                     </div>
                     <div class="bottom">
                         <div>
-                            <p>{{item.represent}}<router-link to="#">查看全文</router-link></p>
+                            <p>{{item.represent}}<router-link :to="{path:'/StoryDetail',query: {id: item.id}}">查看全文</router-link></p>
                         </div>
                     </div>
                 </div>
@@ -36,6 +37,9 @@
             }
         },
         methods:{
+            back(){
+                this.$router.go(-1);//返回上一层
+            },
             fetchData: async function (){
                 let res = await this.post('buyHouseStory/selpage', {"current":1,"num":10});
                 this.lists = res.data.data.objs;
@@ -61,15 +65,22 @@
         height: 88px;
         margin: 0 auto;
     }
+    .header>div{
+        height: 88px;
+        width: 88px;
+        float: left;
+        background-image: url("../../assets/images/person/left_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 26px 40px;
+        background-position-y: 20px;
+    }
     .header>h2{
         font-size: 36px;
         text-align: center;
         height: 88px;
         line-height: 88px;
-        background-image: url("../../assets/images/person/left_arrow.png");
-        background-repeat: no-repeat;
-        background-size: 26px 40px;
-        background-position-y: 20px;
+        float: left;
+        margin-left: 200px;
     }
     .content{
         width: 750px;

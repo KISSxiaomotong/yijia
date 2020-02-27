@@ -2,21 +2,19 @@
     <div id="coupon">
         <header>
             <div class="header">
+                <div @click="back()"></div>
                 <h2>我的优惠券</h2>
             </div>
         </header>
-        <div class="coupon">
+        <div class="coupon" v-for="(item,index) in coupon" :key="index">
             <div class="top">
-                <h2>益家新房优惠券</h2>
+                <h2>{{item.title}}</h2>
                 <input type="button" value="去使用">
             </div>
             <div class="bottom">
-                <p>适用于xxxx服务才可使用该券</p><span @click="more()">查看详情</span>
+                <p>{{item.body}}</p><span @click="more(index)">查看详情</span>
             </div>
-            <div class="detail">
-                <p>时间范围:适用于6月10日起接受居理服务的用户;</p>
-                <p>用户范围:通过居理新房平台(PC、手机端)注册为益家新房用户</p>
-                <p>楼盘范围:仅限标注“安全购”的房源;</p>
+            <div class="detail" v-show=item.show v-html=item.illustrate>
             </div>
         </div>
     </div>
@@ -27,13 +25,34 @@
         name: "Coupon",
         data (){
             return{
-                startX: null,
+                phone: "",
+                coupon: []
             }
         },
         methods: {
-            more: function () {
-
+            back(){
+                this.$router.go(-1);//返回上一层
+            },
+            fetchData: async function (){
+                let that = this;
+                let res = await this.post('userCoupon/byphone', {"phone":this.phone});
+                res = res.data.data;
+                Object.keys(res).forEach(function(key){
+                    let obj = {"label":res[key].coupon.label,"title":res[key].coupon.title,"body":res[key].coupon.body,"illustrate":res[key].coupon.illustrate,"show":false}
+                    that.coupon.push(obj);
+                });
+            },
+            getUser(){
+                let user = JSON.parse(window.localStorage.getItem('user'));
+                this.phone = user.phone;
+            },
+            more(index){
+                this.coupon[index].show = !this.coupon[index].show;
             }
+        },
+        mounted() {
+            this.getUser();
+            this.fetchData();
         }
     }
 </script>
@@ -54,15 +73,22 @@
         height: 88px;
         margin: 0 auto;
     }
+    .header>div{
+        height: 88px;
+        width: 88px;
+        float: left;
+        background-image: url("../../assets/images/person/left_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 26px 40px;
+        background-position-y: 20px;
+    }
     .header>h2{
         font-size: 36px;
         text-align: center;
         height: 88px;
         line-height: 88px;
-        background-image: url("../../assets/images/person/left_arrow.png");
-        background-repeat: no-repeat;
-        background-size: 26px 40px;
-        background-position-y: 20px;
+        float: left;
+        margin-left: 200px;
     }
     .coupon{
         width: 622px;
@@ -115,7 +141,6 @@
         width: 562px;
         padding: 30px;
         margin-top: 30px;
-        display: none;
         background-color: #f5f9fa;
     }
     .detail>p{

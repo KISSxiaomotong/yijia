@@ -3,17 +3,17 @@
         <header>
             <div class="header">
                 <div @click="back()"></div>
-                <h2>行业咨询</h2>
+                <h2>买房故事</h2>
             </div>
         </header>
         <div class="info">
             <div class="title">
-                <h2>{{detail.title}}</h2>
+                <h2>{{detail.represent}}</h2>
             </div>
             <div class="middle">
-                <p>来源：{{detail.source}}</p><span>{{detail.cdate}}</span>
+                <p>姓名：{{detail.mfName}}</p><span>{{detail.cdate}}</span>
             </div>
-            <div class="content" v-html="detail.details">
+            <div class="content" v-html="detail.story">
             </div>
         </div>
     </div>
@@ -21,7 +21,7 @@
 
 <script>
     export default {
-        name: "NewsDetail",
+        name: "StoryDetail",
         data(){
             return{
                 id:this.$route.query.id,
@@ -33,7 +33,7 @@
                 this.$router.go(-1);//返回上一层
             },
             fetchData: async function (){
-                let res = await this.post('industryInformation/selbyid',{"id":this.id});
+                let res = await this.post('buyHouseStory/selbyid',{"id":this.id});
                 this.detail = res.data.data;
             }
         },

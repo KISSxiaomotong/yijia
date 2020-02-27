@@ -25,6 +25,14 @@
         },
         methods:{
             publish: async function (){
+                if(this.details == ""){
+                    Toast('请输入您的留言！');
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    Toast('手机号格式不正确！');
+                    return false;
+                }
                 let res = await this.post('request/add', {
                     "type":4,"phone":this.phone,"details":this.details
                 });
@@ -72,6 +80,7 @@
     .content>textarea{
         width: 432px;
         height: 229px;
+        font-size: 26px;
         padding: 27px 30px;
         border-radius: 5px;
         background-color: #f6f6f6;
@@ -83,6 +92,7 @@
     .content>input[type='text']{
         width: 462px;
         height: 80px;
+        font-size: 26px;
         margin: 30px 0;
         padding-left: 30px;
         border-radius: 5px;

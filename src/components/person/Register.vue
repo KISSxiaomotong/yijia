@@ -73,6 +73,22 @@
                 this.post('user/getCode', {"phone":this.phone});
             },
             register: async function (){
+                if (!this.phone) {
+                    Toast('手机号不能为空！');
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    Toast('手机号格式不正确！');
+                    return false;
+                }
+                if(this.code == ""){
+                    Toast('请填写验证码！');
+                    return false;
+                }
+                if(this.password == ""){
+                    Toast('请填写密码！');
+                    return false;
+                }
                 let res = await this.post('user/register', {"phone":this.phone,"passWord":this.password,"code":this.code});
                 if(res.data.code === 200){
                     Toast("注册成功！");
@@ -174,5 +190,8 @@
     }
     .p2>span{
         color: #01c0ec;
+    }
+    input{
+        font-size: 26px;
     }
 </style>

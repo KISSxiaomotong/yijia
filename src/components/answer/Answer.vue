@@ -2,6 +2,7 @@
     <div id="question">
         <header>
             <div class="header">
+                <div @click="back()"></div>
                 <h2>在线问问</h2>
             </div>
         </header>
@@ -29,7 +30,18 @@
             }
         },
         methods:{
+            back(){
+                this.$router.go(-1);//返回上一层
+            },
             publish: async function (){
+                if(this.problem == ''){
+                    Toast("请输入问题！");
+                    return false;
+                }
+                if(this.represent == ''){
+                    Toast("请详细描述您的问题！");
+                    return false;
+                }
                 let res = await this.post('propertiesWw/add', {"problem":this.problem,"represent":this.represent});
                 if(res.data.code === 200){
                     Toast("提交成功！");
@@ -55,15 +67,22 @@
         height: 88px;
         margin: 0 auto;
     }
+    .header>div{
+        height: 88px;
+        width: 88px;
+        float: left;
+        background-image: url("../../assets/images/person/left_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 26px 40px;
+        background-position-y: 20px;
+    }
     .header>h2{
         font-size: 36px;
         text-align: center;
         height: 88px;
         line-height: 88px;
-        background-image: url("../../assets/images/person/left_arrow.png");
-        background-repeat: no-repeat;
-        background-size: 26px 40px;
-        background-position-y: 20px;
+        float: left;
+        margin-left: 200px;
     }
     .entry{
         width: 690px;

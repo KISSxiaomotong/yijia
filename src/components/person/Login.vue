@@ -7,7 +7,7 @@
             <h2>手机号码登录</h2>
             <input type="text" placeholder="请输入你的手机号码" class="phone" v-model="phone">
             <input type="password" placeholder="请输入密码" class="password" v-model="password">
-            <router-link to="#">忘记密码？</router-link>
+            <router-link to="/Forget">忘记密码？</router-link>
         </div>
         <div class="other">
             <input type="button" value="确认" @click="login">
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+    import { Toast } from 'vant';
     export default {
         name: "Register",
         data() {
@@ -38,10 +39,22 @@
             },
             login: async function (){
                 let res = await this.post('user/signin', {"phone":this.phone,"passWord":this.password});
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    Toast('手机号格式不正确！');
+                    return false;
+                }
+                if(this.password == ""){
+                    Toast('请填写密码！');
+                    return false;
+                }
                 res = res.data;
                 if(res.code == 200){
                     let user = res.data;
                     window.localStorage.setItem("user",JSON.stringify(user));
+                    Toast('登录成功！');
+                    this.loginClose();
+                }else if(res.code == 400){
+                    Toast('账号或密码错误！');
                 }
             }
         }
@@ -119,5 +132,8 @@
     }
     .p2>span{
         color: #01c0ec;
+    }
+    input{
+        font-size: 26px;
     }
 </style>

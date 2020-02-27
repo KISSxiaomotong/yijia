@@ -2,6 +2,7 @@
     <div id="detail">
         <header>
             <div class="header">
+                <div @click="back()"></div>
                 <h2>楼盘动态</h2>
             </div>
         </header>
@@ -19,8 +20,8 @@
             <div class="service">
                 <h4>在线客服</h4>
             </div>
-            <input type="text" class="see" value="预约看房">
-            <input type="text" class="consult" value="电话咨询">
+            <input type="button" class="see" value="预约看房" @click="appointment()">
+            <input type="button" class="consult" value="电话咨询">
         </div>
     </div>
 </template>
@@ -35,9 +36,15 @@
             }
         },
         methods:{
+            back(){
+                this.$router.go(-1);//返回上一层
+            },
             fetchData: async function (){
                 let res = await this.post('propertiesDynamic/selbyid',{"id":this.id});
                 this.detail = res.data.data;
+            },
+            appointment(){
+                this.$router.push('/Appointment')
             }
         },
         mounted() {
@@ -60,15 +67,22 @@
         height: 88px;
         margin: 0 auto;
     }
+    .header>div{
+        height: 88px;
+        width: 88px;
+        float: left;
+        background-image: url("../../assets/images/person/left_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 26px 40px;
+        background-position-y: 20px;
+    }
     .header>h2{
         font-size: 36px;
         text-align: center;
         height: 88px;
         line-height: 88px;
-        background-image: url("../../assets/images/person/left_arrow.png");
-        background-repeat: no-repeat;
-        background-size: 26px 40px;
-        background-position-y: 20px;
+        float: left;
+        margin-left: 200px;
     }
     .info{
         width: 690px;

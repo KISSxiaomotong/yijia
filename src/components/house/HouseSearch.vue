@@ -2,10 +2,11 @@
     <div id="search">
         <div class="header">
             <div>
+                <div class="back" @click="back()"></div>
                 <div class="input">
                     <input type="input" placeholder="请输入楼盘名或区域名" v-model="name" @keyup="search($event)">
                 </div>
-                <router-link to="#"><img src="../../assets/images/house/user.png"></router-link>
+                <span @click="center()"><img src="../../assets/images/house/user.png"></span>
             </div>
         </div>
         <div class="build">
@@ -33,17 +34,21 @@
             </div>
         </div>
         <Footer></Footer>
+        <Login ref="login" @toRegister="toRegister"></Login>
+        <Register ref="register"  @toLogin="toLogin"></Register>
     </div>
 </template>
 
 <script>
+    import Login from "../person/Login";
+    import Register from "../person/Register";
     import Footer from "../assembly/Footer";
     export default {
         name: "HouseSearch",
-        components: {Footer},
+        components: {Footer,Login,Register},
         data (){
             return {
-                name: "",
+                name: this.$route.query.name,
                 area: [],
                 price: [
                     { text: '价格', value: '0,2000'},
@@ -87,6 +92,9 @@
             }
         },
         methods: {
+            back(){
+                this.$router.go(-1);//返回上一层
+            },
             changeArea: async function (){
                 let res = await this.post('properties/selpage', {"current":1,"num":10,"regionId":this.checkedArea});
                 this.lists = res.data.data.objs;
@@ -104,7 +112,7 @@
                 this.lists = res.data.data.objs;
             },
             changeScreen: async function (){
-                let screen = this.checkedPrice;
+                let screen = this.checkedScreen;
                 screen = screen.split(",");
                 let unitAreaMin = screen[0];
                 let unitAreaMax = screen[1];
@@ -156,11 +164,42 @@
                         id:id
                     }
                 })
-            }
+            },
+            center(){
+                let check = this.checkLogin();
+                if(check){
+                    this.$router.push('/Center');
+                }else{
+                    this.$refs.login.loginOpen();
+                }
+            },
+            toSearch: async function (){
+                if(this.name !== undefined){
+                    let res = await this.post('properties/selpage', {"current":1,"num":10,"name":this.name});
+                    this.lists = res.data.data.objs;
+                }
+            },
+            checkLogin(){
+                let user = JSON.parse(window.localStorage.getItem('user'));
+                if(user){
+                    return true;
+                }else{
+                    return false;
+                }
+            },
+            toLogin(){
+                this.$refs.register.registerClose();
+                this.$refs.login.loginOpen();
+            },
+            toRegister(){
+                this.$refs.login.loginClose();
+                this.$refs.register.registerOpen();
+            },
         },
         mounted() {
             this.fetchData();
             this.fetchArea();
+            this.toSearch();
         },
         filters:{
             dateFormat(datestr){
@@ -188,11 +227,15 @@
         background-size: 24px 36px;
         background-position-y: 10px;
     }
+    .back{
+        height: 62px;
+        width: 40px;
+        float: left;
+    }
     .input{
         width: 600px;
         height: 62px;
         float: left;
-        margin-left: 40px;
         border-radius: 60px;
         background-color: #f3f6f9;
     }
@@ -214,7 +257,7 @@
         background-position-x: 103px;
         background-image: url('../../assets/images/search.png');
     }
-    .header>div>a>img{
+    .header>div>span>img{
         width: 36px;
         height: 40px;
         float: right;

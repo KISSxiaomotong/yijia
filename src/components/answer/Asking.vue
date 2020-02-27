@@ -2,6 +2,7 @@
     <div id="asking">
         <header>
             <div class="header">
+                <div @click="back()"></div>
                 <h2>买房问问</h2>
             </div>
         </header>
@@ -33,10 +34,13 @@
             }
         },
         methods:{
+            back(){
+                this.$router.go(-1);//返回上一层
+            },
             fetchData: async function (){
                 let res = await this.post('propertiesWw/selpage', {"current":1,"num":10});
                 this.lists = res.data.data.objs;
-            },
+            }
         },
         mounted() {
             this.fetchData();
@@ -59,15 +63,22 @@
         height: 88px;
         margin: 0 auto;
     }
+    .header>div{
+        height: 88px;
+        width: 88px;
+        float: left;
+        background-image: url("../../assets/images/person/left_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 26px 40px;
+        background-position-y: 20px;
+    }
     .header>h2{
         font-size: 36px;
         text-align: center;
         height: 88px;
         line-height: 88px;
-        background-image: url("../../assets/images/person/left_arrow.png");
-        background-repeat: no-repeat;
-        background-size: 26px 40px;
-        background-position-y: 20px;
+        float: left;
+        margin-left: 200px;
     }
     .answer{
         width: 690px;
@@ -98,6 +109,7 @@
         font-size: 28px;
         color: #222222;
         line-height: 40px;
+        min-height: 40px;
     }
     .fill{
         width: 750px;
