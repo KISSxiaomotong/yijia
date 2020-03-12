@@ -12,6 +12,7 @@ import StoryDetail from '../../components/house/StoryDetail';
 import DynamicDetail from '../../components/house/DynamicDetail';
 import HouseDetail from '../../components/house/HouseDetail';
 import PreInfo from '../../components/house/PreInfo';
+import PreinfoDetail from '../../components/house/PreinfoDetail';
 import Help from '../../components/house/Help';
 import About from '../../components/about/About';
 import News from '../../components/news/News';
@@ -29,6 +30,12 @@ import Car from '../../components/assembly/Car';
 import CouponPopup from '../../components/assembly/CouponPopup';
 import SearchDetail from '../../components/house/SearchDetail';
 import Forget from '../../components/person/Forget';
+import Comment from '../../components/other/Comment';
+import UserComment from '../../components/house/UserComment';
+import ExpertComment from '../../components/house/ExpertComment';
+import Apartment from '../../components/house/Apartment';
+import ApartmentDetail from '../../components/house/ApartmentDetail';
+import EditInfo from '../../components/person/EditInfo';
 
 Vue.use(Router) //使用vue-router
 
@@ -45,6 +52,7 @@ export default new Router({
         { path: "/StoryDetail", name: "StoryDetail", component: StoryDetail},
         { path: "/HouseDetail", name: "HouseDetail", component: HouseDetail},
         { path: "/Preinfo", name: "PreInfo", component: PreInfo},
+        { path: "/PreinfoDetail", name: "PreinfoDetail", component: PreinfoDetail},
         { path: "/Help", name: "Help", component: Help},
         { path: "/DynamicDetail", name: "DynamicDetail", component: DynamicDetail},
         { path: "/Asking", name: "Asking", component: Asking},
@@ -62,6 +70,15 @@ export default new Router({
         { path: "/Car", name: "Message", component:Car},
         { path: "/CouponPopup", name: "CouponPopup", component:CouponPopup},
         { path: "/SearchDetail", name: "SearchDetail", component:SearchDetail},
-        { path: "/Forget", name: "Forget", component:Forget}
-    ]
+        { path: "/Forget", name: "Forget", component:Forget},
+        { path: "/Comment", name: "Comment", component:Comment},
+        { path: "/UserComment", name: "UserComment", component:UserComment},
+        { path: "/ExpertComment", name: "ExpertComment", component:ExpertComment},
+        { path: "/Apartment", name: "Apartment", component:Apartment},
+        { path: "/ApartmentDetail", name: "ApartmentDetail", component:ApartmentDetail},
+        { path: "/EditInfo", name: "EditInfo", component:EditInfo}
+    ],
+    scrollBehavior (to, from, savedPosition) {
+        return { x: 0, y: 0 }
+    }
 })

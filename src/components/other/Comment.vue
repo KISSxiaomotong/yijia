@@ -1,20 +1,20 @@
 <template>
-    <div id="advice">
+    <div id="comment">
         <header>
             <div class="header">
                 <div @click="back()"></div>
-                <h2>投诉建议</h2>
+                <h2>我要点评</h2>
             </div>
         </header>
-        <div class="description">
-            <textarea placeholder="请详细描述您的问题" v-model="details"></textarea>
+        <div class="entry">
+            <input type="text" placeholder="输入您的问题" v-model="problem">
         </div>
         <div class="fill"></div>
-        <div class="entry">
-            <input type="text" placeholder="输入你的手机号码（非必填）" v-model="phone">
+        <div class="description">
+            <textarea placeholder="请详细描述您的问题" v-model="represent"></textarea>
         </div>
         <div class="submit">
-            <input type="button" value="提交" @click="publish()">
+            <input type="button" value="提交问题" @click="publish()">
         </div>
     </div>
 </template>
@@ -22,11 +22,11 @@
 <script>
     import { Toast } from 'vant';
     export default {
-        name: "Advice",
+        name: "Comment",
         data(){
             return{
-                details: "",
-                phone: ""
+                problem: '',
+                represent: ''
             }
         },
         methods:{
@@ -34,17 +34,15 @@
                 this.$router.go(-1);//返回上一层
             },
             publish: async function (){
-                if(this.details == ""){
+                if(this.problem == ''){
+                    Toast("请输入问题！");
+                    return false;
+                }
+                if(this.represent == ''){
                     Toast("请详细描述您的问题！");
                     return false;
                 }
-                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
-                    Toast('手机号格式不正确');
-                    return false;
-                }
-                let res = await this.post('request/add', {
-                    "type":3,"phone":this.phone,"details":this.details
-                });
+                let res = await this.post('propertiesWw/add', {"problem":this.problem,"represent":this.represent});
                 if(res.data.code === 200){
                     Toast("提交成功！");
                     this.$router.go(-1);
@@ -57,14 +55,13 @@
 </script>
 
 <style scoped>
-    #advice{
+    #comment{
         width: 750px;
         background-color: #ffffff;
     }
     header{
         width: 750px;
         height: 88px;
-        border-bottom: 1px solid #edf1f5;
     }
     .header{
         width: 690px;
@@ -96,8 +93,8 @@
     .entry>input{
         width: 690px;
         height: 50px;
-        font-size: 28px;
         margin: 25px 0;
+        font-size: 28px;
     }
     .entry>input::-webkit-input-placeholder{
         font-size: 28px;
@@ -111,13 +108,13 @@
     .description{
         width: 690px;
         height: 330px;
-        margin: 0 auto 40px;
+        margin: 0 auto;
     }
     .description>textarea{
         width: 690px;
         height: 260px;
-        font-size: 28px;
         margin: 36px auto 34px;
+        font-size: 28px;
     }
     .description>textarea::-webkit-input-placeholder{
         font-size: 28px;
@@ -125,6 +122,7 @@
     }
     .submit{
         width: 690px;
+        height: 84px;
         margin: 0 auto;
     }
     .submit>input{

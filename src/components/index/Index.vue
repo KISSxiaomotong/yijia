@@ -29,12 +29,12 @@
                 <li v-for="(item,index) in news" :key="index"><router-link :to="{path:'/NewsDetail',query: {id: item.id}}">{{item.title}}</router-link></li>
             </ul>
         </div>
-        <div class="recommend" ref="comment">
+        <div class="recommend">
             <div class="recommend_title">
                 <h2>品质推荐</h2>
                 <router-link to="/HouseSearch"><h3>更多楼盘</h3></router-link>
             </div>
-            <div class="recommend_content" ref="slide" :style="slideStyle">
+            <div class="recommend_content">
                 <div v-for="(item,index) in recommend" :key="index" @click="toHouse(item.id)">
                     <div class="position">
                         <img :src="item.cover">
@@ -46,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <div class="house" ref="houses">
+        <div class="house">
             <div class="house_title">
                 <h2>一房一价</h2>
                 <router-link to="/HouseSearch"><h3>更多楼盘</h3></router-link>
@@ -58,7 +58,7 @@
                     <van-dropdown-item v-model="checkedPriceScreen" :options="priceScreen" @change="changePriceScreen()"/>
                 </van-dropdown-menu>
             </div>
-            <div class="house_content" ref="house" :style="houseStyle">
+            <div class="house_content" ref="house">
                 <div v-for="(item,index) in price" :key="index" @click="toHouse(item.id)">
                     <div class="position">
                         <img :src="item.cover">
@@ -75,7 +75,7 @@
                 <h2>咨询师</h2>
                 <router-link to="/Consult"><h3>查看更多</h3></router-link>
             </div>
-            <div class="consult_middle">
+            <div class="consult_middle" @click="toConsult(consult.id)">
                <div class="consult_content">
                    <h4>{{consult.name}}<p>{{consult.university}}</p></h4>
                    <p>{{consult.slogan}}</p>
@@ -86,7 +86,7 @@
                 </div>
             </div>
             <div class="consult_bottom">
-                <p><span>换一换</span></p>
+                <p @click="changeConsult(consult.key)"><span>换一换</span></p>
             </div>
         </div>
         <div class="build">
@@ -139,34 +139,18 @@
             return {
                 name: "",
                 notLogin: this.$route.query.notLogin,
-                //滑动属性
-                commentBorder: 0,
-                housesBorder: 0,
-                positionX: 0,
-                startX: 0,
-                endX: 0,
-                slideStyle: {
-                    left: 0,
-                    transition: 'none'
-                },
-                positionH: 0,
-                startH: 0,
-                endH: 0,
-                houseStyle: {
-                    left: 0,
-                    transition: 'none'
-                },
                 houseArea: [],
                 priceArea: [],
                 housePrice: [
-                    { text: '价格', value: '0,2000'},
-                    { text: '<200万', value: '0,200'},
-                    { text: '200-400万', value: '200,400'},
-                    { text: '400-500万', value: '400,500'},
-                    { text: '500-600万', value: '500,600'},
-                    { text: '600-800万', value: '600,800'},
-                    { text: '800-1000万', value: '800,1000'},
-                    { text: '1000-2000万', value: '1000,2000'}
+                    { text: '价格', value: '0,3000'},
+                    { text: '50万以下', value: '0,50'},
+                    { text: '50-80万', value: '50,80'},
+                    { text: '80-100万', value: '80,100'},
+                    { text: '100-120万', value: '100,120'},
+                    { text: '120-150万', value: '120,150'},
+                    { text: '150-200万', value: '150,200'},
+                    { text: '200-300万', value: '200,300'},
+                    { text: '300万以上', value: '300,3000'}
                 ],
                 houseApartment: [
                     { text: '户型', value: 0},
@@ -210,24 +194,29 @@
                 ],
                 checkedHouseArea: 0,
                 checkedPriceArea: 0,
-                checkedHousePrice: '0,2000',
+                checkedHousePrice: '0,3000',
                 checkedHouseApartment: 0,
                 checkedPriceApartment: 0,
                 checkedHouseScreen: '0,2000',
                 checkedPriceScreen: '0,2000',
                 checkedHouseOrder: 0,
-
                 recommend: [],
                 price: [],
                 consult: {},
+                consultation: {},
                 house: [],
                 news: {}
             }
         },
         methods: {
             changeArea: async function (){
-                let res = await this.post('properties/selpage', {"current":1,"num":6,"regionId":this.checkedHouseArea});
-                this.house = res.data.data.objs;
+                if(this.checkedHouseArea == 0){
+                    let res = await this.post('properties/selpage', {"current":1,"num":6});
+                    this.house = res.data.data.objs;
+                }else{
+                    let res = await this.post('properties/selpage', {"current":1,"num":6,"regionId":this.checkedHouseArea});
+                    this.house = res.data.data.objs;
+                }
             },
             changePrice: async function (){
                 let price = this.checkedHousePrice;
@@ -238,8 +227,14 @@
                 this.house = res.data.data.objs;
             },
             changeApartment: async function (){
-                let res = await this.post('properties/selpage', {"current":1,"num":6,"hxing":this.checkedHouseApartment});
-                this.house = res.data.data.objs;
+                if(this.checkedHouseApartment == 0){
+                    let res = await this.post('properties/selpage', {"current":1,"num":6});
+                    this.house = res.data.data.objs;
+                }else{
+                    let res = await this.post('properties/selpage', {"current":1,"num":6,"hxing":this.checkedHouseApartment});
+                    this.house = res.data.data.objs;
+                }
+
             },
             changeScreen: async function (){
                 let screen = this.checkedHouseScreen;
@@ -267,12 +262,22 @@
 
             },
             changePriceArea: async function(){
-                let res = await this.post('properties/selpage', {"current":1,"num":4,"regionId":this.checkedPriceArea});
-                this.price = res.data.data.objs;
+                if(this.checkedPriceArea == 0){
+                    let res = await this.post('properties/selpage', {"current":1,"num":4});
+                    this.price = res.data.data.objs;
+                }else{
+                    let res = await this.post('properties/selpage', {"current":1,"num":4,"regionId":this.checkedPriceArea});
+                    this.price = res.data.data.objs;
+                }
             },
             changePriceApartment: async function(){
-                let res = await this.post('properties/selpage', {"current":1,"num":4,"hxing":this.checkedPriceApartment});
-                this.price = res.data.data.objs;
+                if(this.checkedPriceApartment == 0){
+                    let res = await this.post('properties/selpage', {"current":1,"num":4});
+                    this.price = res.data.data.objs;
+                }else{
+                    let res = await this.post('properties/selpage', {"current":1,"num":4,"hxing":this.checkedPriceApartment});
+                    this.price = res.data.data.objs;
+                }
             },
             changePriceScreen: async function(){
                 let screen = this.checkedHouseScreen;
@@ -282,47 +287,6 @@
                 let res = await this.post('properties/selpage', {"current":1,"num":4,"unitAreaMin":unitAreaMin,"unitAreaMax":unitAreaMax});
                 this.price = res.data.data.objs;
             },
-           /* start (e){
-                this.startX = e.touches[0].clientX;
-                this.endX = this.$refs.slide.offsetLeft;
-                this.slideStyle.transition = 'none';
-            },
-            move (e){
-                let moveX = this.endX + (e.touches[0].clientX - this.startX);  //计算滑动的距离
-                this.positionX = moveX;
-                if(this.positionX == 0 && moveX< 0){
-                    this.slideStyle.left = moveX + 'px';
-                }else if(this.positionX > this.commentBorder && this.positionX < 0 && moveX < 0){
-                    this.slideStyle.left = moveX + 'px';
-                }else if(this.positionX <= this.commentBorder && (e.touches[0].clientX - this.startX) > 0){
-                    this.slideStyle.left = this.commentBorder + 'px';
-                }
-            },
-            end (){
-                this.slideStyle.transition = 'left .3s';
-            },
-            dostart (e){
-                this.startH = e.touches[0].clientX;
-                this.endH = this.$refs.house.offsetLeft;
-                this.houseStyle.transition = 'none';
-            },
-            domove (e){
-                let moveH = this.endH + (e.touches[0].clientX - this.startH);  //计算滑动的距离
-                this.positionH = moveH;
-                if(this.positionH == 0 && moveH< 0){
-                    console.log(1);
-                    this.houseStyle.left = moveH + 'px';
-                }else if(this.positionH > this.housesBorder && this.positionH < 0 && moveH < 0){
-                    console.log(2);
-                    this.houseStyle.left = moveH + 'px';
-                }else if(this.positionH <= this.housesBorder && (e.touches[0].clientX - this.startH) > 0){
-                    console.log(3);
-                    this.houseStyle.left = this.housesBorder + 'px';
-                }
-            },
-            doend (){
-                this.houseStyle.transition = 'left .3s';
-            },*/
             openCoupon(){
                 let coupon = window.localStorage.getItem('coupon');
                 if(coupon !== "coupon"){
@@ -369,13 +333,6 @@
                 }else{
                     this.recommend = recommend;
                 }
-                //计算宽度
-                if(this.recommend.length <= 2){
-                    this.slideStyle.width = "690px";
-                }else{
-                    let slideWidth = 300 * this.recommend.length + 20*(this.recommend.length-1);
-                    this.slideStyle.width = slideWidth + "px";
-                }
                 let price = res.yfyj;
                 if(price.length >= 5){
                     for (let i=0;i<5;i++){
@@ -384,14 +341,12 @@
                 }else{
                     this.price = price;
                 }
-                //计算宽度
-                if(this.price.length <= 2){
-                    this.houseStyle.width = "690px";
-                }else{
-                    let houseWidth = 1600;
-                    this.houseStyle.width = houseWidth + "px";
-                }
-                this.consult = res.zxs[0];
+                let consultation = res.zxs;
+                Object.keys(consultation).forEach(function(key){
+                    consultation[key].key = key;
+                });
+                this.consultation = consultation;
+                this.consult = consultation[0];
                 let house = res.tj;
                 if(house.length >= 6){
                     for (let i=0;i<6;i++){
@@ -449,6 +404,23 @@
                     this.closeCoupon();
                     this.toLogin();
                 }
+            },
+            toConsult(id){
+                this.$router.push({
+                    path:'/Consultant',
+                    query:{
+                        id:id
+                    }
+                })
+            },
+            changeConsult(key){
+                let k = Number(key) + 1;
+                let length = this.consultation.length;
+                if(k>=length){
+                    this.consult = this.consultation[0];
+                }else{
+                    this.consult = this.consultation[k];
+                }
             }
         },
         mounted (){
@@ -457,14 +429,6 @@
             this.fetchArea();
             this.fetchPriceArea();
             this.ejectLogin();
-            // 使用js的现代事件监听transition过渡结束
-            /*let _this = this;
-            this.$refs.slide.addEventListener('transitionend',function(){
-                _this.endX = this.offsetLeft;
-            });
-            this.$refs.house.addEventListener('transitionend',function(){
-                _this.endH = this.offsetLeft;
-            });*/
         },
         filters:{
             dateFormat(datestr){
@@ -595,11 +559,9 @@
         color: #222222;
     }
     .recommend{
-        width: 690px;
         height: 430px;
         margin: 60px 30px 0 30px;
-        overflow-x: hidden;
-        position: relative;
+        overflow: hidden;
     }
     .recommend_title{
         width: 690px;
@@ -629,14 +591,20 @@
         background-image: url("../../assets/images/right_arrow.png");
     }
     .recommend_content{
-        width: 1600px;
-        position: absolute;
-        top: 80px;
+        white-space: nowrap;
+        overflow-y:auto;
+        margin-top: 36px;
+    }
+    .recommend_content::-webkit-scrollbar{
+        display: none;
     }
     .recommend_content>div{
         width: 300px;
-        float: left;
+        display: inline-block;
         margin-right: 20px;
+    }
+    .recommend_content>div:last-child{
+        margin-right: 0;
     }
     .position{
         border-radius: 10px;
@@ -680,11 +648,9 @@
         font-size: 20px;
     }
     .house{
-        width: 690px;
         height: 510px;
         margin: 60px 30px 0 30px;
-        overflow-x: hidden;
-        position: relative;
+        overflow: hidden;
     }
     .house_title{
         width: 690px;
@@ -722,13 +688,20 @@
         border:none;
     }
     .house_content{
-        position: absolute;
-        top: 160px;
+        white-space: nowrap;
+        overflow-y:auto;
+        margin-top: 20px;
+    }
+    .house_content::-webkit-scrollbar{
+        display: none;
     }
     .house_content>div{
         width: 300px;
-        float: left;
+        display: inline-block;
         margin-right: 20px;
+    }
+    .house_content>div:last-child{
+        margin-right: 0;
     }
     .house_content>div>h3{
         font-size: 28px;

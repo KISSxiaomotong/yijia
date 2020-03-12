@@ -32,6 +32,7 @@
                 });
                 if(res.data.code === 200){
                     Toast("提交成功！");
+                    this.$router.go(-1);
                 }else{
                     Toast("提交失败！");
                 }

@@ -51,14 +51,15 @@
                 name: this.$route.query.name,
                 area: [],
                 price: [
-                    { text: '价格', value: '0,2000'},
-                    { text: '<200万', value: '0,200'},
-                    { text: '200-400万', value: '200,400'},
-                    { text: '400-500万', value: '400,500'},
-                    { text: '500-600万', value: '500,600'},
-                    { text: '600-800万', value: '600,800'},
-                    { text: '800-1000万', value: '800,1000'},
-                    { text: '1000-2000万', value: '1000,2000'}
+                    { text: '价格', value: '0,3000'},
+                    { text: '50万以下', value: '0,50'},
+                    { text: '50-80万', value: '50,80'},
+                    { text: '80-100万', value: '80,100'},
+                    { text: '100-120万', value: '100,120'},
+                    { text: '120-150万', value: '120,150'},
+                    { text: '150-200万', value: '150,200'},
+                    { text: '200-300万', value: '200,300'},
+                    { text: '300万以上', value: '300,300'}
                 ],
                 apartment: [
                     { text: '户型', value: 0},
@@ -84,7 +85,7 @@
                     { text: '时间排序', value: 3},
                 ],
                 checkedArea: 0,
-                checkedPrice: '0,2000',
+                checkedPrice: '0,3000',
                 checkedApartment: 0,
                 checkedScreen: '0,2000',
                 checkedOrder: 0,
@@ -96,8 +97,13 @@
                 this.$router.go(-1);//返回上一层
             },
             changeArea: async function (){
-                let res = await this.post('properties/selpage', {"current":1,"num":10,"regionId":this.checkedArea});
-                this.lists = res.data.data.objs;
+                if(this.checkedArea == 0){
+                    let res = await this.post('properties/selpage', {"current":1,"num":10});
+                    this.lists = res.data.data.objs;
+                }else{
+                    let res = await this.post('properties/selpage', {"current":1,"num":10,"regionId":this.checkedArea});
+                    this.lists = res.data.data.objs;
+                }
             },
             changePrice: async function (){
                 let price = this.checkedPrice;
@@ -108,8 +114,14 @@
                 this.lists = res.data.data.objs;
             },
             changeApartment: async function (){
-                let res = await this.post('properties/selpage', {"current":1,"num":10,"hxing":this.checkedApartment});
-                this.lists = res.data.data.objs;
+                if(this.checkedApartment == 0){
+                    let res = await this.post('properties/selpage', {"current":1,"num":10});
+                    this.lists = res.data.data.objs;
+                }else{
+                    let res = await this.post('properties/selpage', {"current":1,"num":10,"hxing":this.checkedApartment});
+                    this.lists = res.data.data.objs;
+                }
+
             },
             changeScreen: async function (){
                 let screen = this.checkedScreen;
@@ -134,7 +146,6 @@
                     let res = await this.post('properties/selpage', {"current":1,"num":10,"cdateIsAsc": true});
                     this.lists = res.data.data.objs;
                 }
-
             },
             fetchData: async function (){
                 let res = await this.post('properties/selpage', {"current":1,"num":10});

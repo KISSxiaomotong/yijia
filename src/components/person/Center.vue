@@ -14,12 +14,12 @@
         <div class="fill"></div>
         <div class="list">
             <ul>
-                <li><router-link to="/Coupon"><img src="../../assets/images/person/coupon.png"><span>我的优惠券</span></router-link></li>
-                <li><router-link to="/Help"><img src="../../assets/images/person/house.png"><span>帮我找房</span></router-link></li>
-                <li><router-link to="/Appointment"><img src="../../assets/images/person/car.png"><span>预约专车</span></router-link></li>
-                <li><router-link to="/HouseSearch"><img src="../../assets/images/person/house.png"><span>楼盘合作</span></router-link></li>
-                <li><router-link to="/About"><img src="../../assets/images/person/about.png"><span>关于我们</span></router-link></li>
-                <li><router-link to="/Advice"><img src="../../assets/images/person/suggest.png"><span>投诉建议</span></router-link></li>
+                <router-link to="/Coupon" tag="li"><img src="../../assets/images/person/coupon.png"><span>我的优惠券</span></router-link>
+                <router-link to="/Help" tag="li"><img src="../../assets/images/person/house.png"><span>帮我找房</span></router-link>
+                <router-link to="/Appointment" tag="li"><img src="../../assets/images/person/car.png"><span>预约专车</span></router-link>
+                <router-link to="/HouseSearch" tag="li"><img src="../../assets/images/person/house.png"><span>楼盘合作</span></router-link>
+                <router-link to="/About" tag="li"><img src="../../assets/images/person/about.png"><span>关于我们</span></router-link>
+                <router-link to="/Advice" tag="li"><img src="../../assets/images/person/suggest.png"><span>投诉建议</span></router-link>
             </ul>
         </div>
         <Footer></Footer>
@@ -143,11 +143,11 @@
         background-repeat: no-repeat;
         background-position: right;
     }
-    .list>ul>li>a>img{
+    .list>ul>li>img{
         width: 50px;
         height: 42px;
     }
-    .list>ul>li>a>span{
+    .list>ul>li>span{
         margin-left: 26px;
         font-size: 26px;
         font-weight: bold;

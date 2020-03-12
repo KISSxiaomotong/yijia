@@ -7,13 +7,13 @@
             </div>
         </header>
         <div class="image"><span>头像</span><img :src="user.headPortrait"></div>
-        <div class="nickname"><span>昵称</span><p>{{user.userName}}</p></div>
+        <div class="nickname" @click="edit(1)"><span>昵称</span><p>{{user.userName}}</p></div>
         <div class="info">
             <ul>
-                <li><router-link to="#"><span>性别</span><p>男</p></router-link></li>
-                <li><router-link to="#"><span>邮箱</span><p>未设置</p></router-link></li>
-                <li><router-link to="#"><span>真实姓名</span><p>未填写</p></router-link></li>
-                <li><router-link to="#"><span>手机号</span><p>{{user.phone}}</p></router-link></li>
+                <li @click="edit(2)"><span>性别</span><p>男</p></li>
+                <li @click="edit(3)"><span>邮箱</span><p>未设置</p></li>
+                <li @click="edit(4)"><span>真实姓名</span><p>未填写</p></li>
+                <li><span>手机号</span><p>{{user.phone}}</p></li>
             </ul>
         </div>
         <div class="layout">
@@ -41,6 +41,14 @@
             layout(){
                 window.localStorage.removeItem('user');
                 this.$router.push('/');
+            },
+            edit(cate){
+                this.$router.push({
+                    path:'/EditInfo',
+                    query:{
+                        cate:cate
+                    }
+                })
             }
         },
         mounted() {
@@ -130,17 +138,17 @@
         background-position: right;
         background-size: 20px 40px;
     }
-    .info>ul>li>a{
+    .info>ul>li{
         color: #333333;
     }
-    .info>ul>li>a>span{
+    .info>ul>li>span{
         display: block;
         height: 100px;
         line-height: 100px;
         font-size: 30px;
         float: left;
     }
-    .info>ul>li>a>p{
+    .info>ul>li>p{
         float: right;
         font-size: 30px;
         height: 100px;

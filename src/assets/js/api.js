@@ -43,7 +43,7 @@ function checkCode (res) {
 export function post(url, data) {
     return axios({
         method: 'post',
-        baseURL: '/proxy/',
+        baseURL: 'http://sbo.natapp1.cc/',
         url,
         data: qs.stringify(data),
         timeout: 10000,
@@ -65,7 +65,7 @@ export function post(url, data) {
 export function get(url, params) {
     return axios({
         method: 'get',
-        baseURL: '/proxy/',
+        baseURL: 'http://sbo.natapp1.cc/',
         url,
         params, // get 请求时带的参数
         timeout: 10000,

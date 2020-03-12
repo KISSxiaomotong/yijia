@@ -38,6 +38,7 @@
                 });
                 if(res.data.code === 200){
                     Toast("留言成功！");
+                    this.$router.go(-1);
                 }else{
                     Toast("留言失败！");
                 }

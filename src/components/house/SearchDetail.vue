@@ -68,10 +68,10 @@
         <div class="apartment">
             <div class="apartment_title">
                 <h2>户型分析</h2>
-                <router-link to="#"><h3>全部户型</h3></router-link>
+                <router-link :to="{path:'/Apartment',query:{id:this.id}}"><h3>全部户型</h3></router-link>
             </div>
             <div class="apartment_content">
-                <div v-for="(item,index) in houseShapes" :key="index">
+                <div v-for="(item,index) in houseShapes" :key="index" @click="shape(item.id)">
                     <img :src="item.imgs">
                     <h3>{{item.title}}<span>{{item.state}}</span></h3>
                     <p>朝向：{{item.orientation}} | 类型：{{item.type}}</p>
@@ -85,7 +85,7 @@
                 <h2>楼盘动态</h2>
                 <router-link to="/HouseDynamic"><h3>全部动态</h3></router-link>
             </div>
-            <div class="dynamic_content" v-for="(item,index) in propertiesDynamics" :key="index">
+            <div class="dynamic_content" v-for="(item,index) in propertiesDynamics" :key="index" @click="dynamic(item.id)">
                 <div class="dynamic_left">
                     <h3>{{item.title}}</h3>
                     <p>{{item.represent}}</p>
@@ -118,7 +118,7 @@
         <div class="comment">
             <div class="comment_title">
                 <h2>专家点评</h2>
-                <router-link to="#"><h3>全部点评</h3></router-link>
+                <router-link :to="{path:'/ExpertComment'}"><h3>全部点评</h3></router-link>
             </div>
             <div class="comment_top">
                 <div class="comment_left">
@@ -128,7 +128,7 @@
                 </div>
                 <div class="comment_right">
                     <input type="button" value="沟通" id="communicate">
-                    <input type="button" value="留言" id="message">
+                    <input type="button" value="留言" id="message" @click="message()">
                 </div>
             </div>
             <div class="comment_middle">
@@ -142,7 +142,7 @@
         <div class="user">
             <div class="user_title">
                 <h2>用户点评</h2>
-                <router-link to="#"><h3>全部点评</h3></router-link>
+                <router-link :to="{path:'/UserComment'}"><h3>全部点评</h3></router-link>
             </div>
             <div class="user_info" v-for="(item,index) in userComment" :key="index">
                 <div class="user_left">
@@ -155,7 +155,7 @@
                 </div>
                 <div class="clear"></div>
             </div>
-            <div class="user_comment">
+            <div class="user_comment" @click="comment()">
                 <img src="../../assets/images/edit.png">
                 <p>我要点评</p>
             </div>
@@ -199,7 +199,7 @@
                 <h2>一房一价</h2>
                 <router-link :to="{path:'/PreInfo',query: {id: id}}"><h3>更多信息</h3></router-link>
             </div>
-            <div class="pre" v-html="price">
+            <div class="pre" v-html="price" @click="toDetail(id)">
             </div>
         </div>
         <div class="fill"></div>
@@ -467,8 +467,24 @@
                     }
                 })
             },
+            dynamic(id){
+                this.$router.push({
+                    path:'/DynamicDetail',
+                    query:{
+                        id:id
+                    }
+                })
+            },
+            toDetail(id){
+                this.$router.push({
+                    path:'/PreInfo',
+                    query:{
+                        id:id
+                    }
+                })
+            },
             house(id){
-                this.$router.replace({
+                this.$router.push({
                     path: "/SearchDetail",
                     query: {
                         id:id
@@ -514,6 +530,20 @@
                 }else{
                     this.toLogin();
                 }
+            },
+            comment(){
+                this.$router.push('/Comment');
+            },
+            message(){
+                this.$router.push('/Advice');
+            },
+            shape(id){
+                this.$router.push({
+                    path:'/ApartmentDetail',
+                    query:{
+                        id:id
+                    }
+                })
             }
         },
         mounted() {
@@ -829,7 +859,6 @@
         margin-left: 14px;
         padding: 0 10px;
     }
-
     .dynamic{
         width: 690px;
         height: 630px;
@@ -1226,7 +1255,6 @@
     }
     .consult{
         width: 690px;
-        height: 348px;
         margin: 0 auto 30px;
     }
     .consult_title{

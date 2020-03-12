@@ -89,9 +89,14 @@
                     Toast('请填写密码！');
                     return false;
                 }
+                if(this.checked == false){
+                    Toast('请勾选注册协议！');
+                    return false;
+                }
                 let res = await this.post('user/register', {"phone":this.phone,"passWord":this.password,"code":this.code});
                 if(res.data.code === 200){
                     Toast("注册成功！");
+                    this.registerClose();
                 }else if(res.data.code === 400){
                     Toast("已注册或验证码错误！");
                 }

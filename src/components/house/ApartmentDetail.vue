@@ -1,31 +1,23 @@
 <template>
-    <div id="detail">
+    <div id="apartment_detail">
         <header>
             <div class="header">
                 <div @click="back()"></div>
-                <h2>行业咨询</h2>
+                <h2>户型详情</h2>
             </div>
         </header>
-        <div class="info">
-            <div class="title">
-                <h2>{{detail.title}}</h2>
-            </div>
-            <div class="middle">
-                <p>来源：{{detail.source}}</p><span>{{detail.cdate}}</span>
-            </div>
-            <div class="content" v-html="detail.details">
-            </div>
+        <div class="content" v-html="detail.details">
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "NewsDetail",
+        name: "ApartmentDetail",
         data(){
             return{
                 id:this.$route.query.id,
-                detail:{}
+                detail: {}
             }
         },
         methods:{
@@ -33,7 +25,7 @@
                 this.$router.go(-1);//返回上一层
             },
             fetchData: async function (){
-                let res = await this.post('industryInformation/selbyid',{"id":this.id});
+                let res = await this.post('houseShape/selbyid', {"id":this.id});
                 this.detail = res.data.data;
             }
         },
@@ -44,7 +36,7 @@
 </script>
 
 <style scoped>
-    #detail{
+    #apartment_detail{
         width: 750px;
         background-color: #ffffff;
     }
@@ -73,39 +65,6 @@
         line-height: 88px;
         float: left;
         margin-left: 200px;
-    }
-    .info{
-        width: 690px;
-        margin: 0 auto;
-    }
-    .title{
-        width: 690px;
-        height: 100px;
-    }
-    .title>h2{
-        font-size: 36px;
-        font-weight: bold;
-        height: 50px;
-        line-height: 50px;
-        margin-top: 40px;
-    }
-    .middle{
-        width: 690px;
-        height: 50px;
-        line-height: 50px;
-        margin-top: 20px;
-    }
-    .middle>p{
-        font-size: 24px;
-        color: #888888;
-        float: left;
-    }
-    .middle>span{
-        display: block;
-        font-size: 24px;
-        color: #888888;
-        float: left;
-        margin-left: 20px;
     }
     .content{
         width: 690px;

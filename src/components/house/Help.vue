@@ -289,6 +289,7 @@
     .area>input{
         width: 660px;
         height: 80px;
+        font-size: 24px;
         border-radius: 5px;
         padding-left: 30px;
         margin-top: 36px;
