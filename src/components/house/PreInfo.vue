@@ -22,7 +22,7 @@
             </table>
         </div>
         <div class="info">
-            <table>
+            <table v-show="table">
                 <tr>
                     <th rowspan="2">楼层\单元</th>
                     <th colspan="4">
@@ -39,6 +39,9 @@
                     <td v-for="(i,d) in item.children" :key="d" :style="i.state" @click="show(i.id)">{{i.label}}</td>
                 </tr>
             </table>
+            <div class="richText"  v-show="richText" v-html="textArea">
+
+            </div>
         </div>
         <div class="status">
             <div>
@@ -89,7 +92,10 @@
                 floor: [],
                 tungId: 0,
                 unitId: 0,
-                unitArray: []
+                unitArray: [],
+                table:false,
+                richText:false,
+                textArea:{}
             }
         },
         methods:{
@@ -108,24 +114,27 @@
                     tung.push({"id":res[key].id,"title":res[key].label});
                 });
                 this.tung = tung;
-                this.tungId = this.tung[0].id;
-                this.unitId =  await this.fetchUnit(this.tungId);
-                this.fetchApartment(this.unitId);
             },
             fetchUnit: async function (id){
                 let res = await this.post('properties/dy', {"id":id});
                 res = res.data.data;
-                let unit = [];
-                Object.keys(res).forEach(function(key){
-                    unit.push({"id":res[key].id,"title":res[key].label});
-                });
-                this.unit = unit;
-                let unitArray = [];
-                Object.keys(res).forEach(function(key){
-                    unitArray.push({"text":res[key].label,"value":res[key].id});
-                });
-                this.unitArray = unitArray;
-                return this.unit[0].id;
+                if(res.hasOwnProperty('suspend')){
+                    this.textArea = res.suspend;
+                    this.richText = true;
+                    return 0;
+                }else{
+                    let unit = [];
+                    Object.keys(res).forEach(function(key){
+                        unit.push({"id":res[key].id,"title":res[key].label});
+                    });
+                    this.unit = unit;
+                    let unitArray = [];
+                    Object.keys(res).forEach(function(key){
+                        unitArray.push({"text":res[key].label,"value":res[key].id});
+                    });
+                    this.unitArray = unitArray;
+                    return this.unit[0].id;
+                }
             },
             fetchApartment: async function (id){
                 let res = await this.post('properties/lh', {"id":id});
@@ -163,7 +172,9 @@
             changeTung: async function(id){
                 this.tungId = id;
                 this.unitId =  await this.fetchUnit(this.tungId);
-                this.fetchApartment(this.unitId);
+                if(this.unitId != 0){
+                    this.fetchApartment(this.unitId);
+                }
             },
             show(id){
                 this.$router.push({
@@ -271,6 +282,9 @@
     .info>table td a{
         color: #ef3e4a;
         margin-right: 12px;
+    }
+    .richText >>> img{
+        width: 690px;
     }
     .footer{
         width: 690px;

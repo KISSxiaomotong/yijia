@@ -28,7 +28,7 @@
                         <h4>{{item.name}}<span>在售</span></h4>
                         <p>地址：{{item.address}}</p>
                         <h5>{{item.opening | dateFormat()}} · {{item.opening}}</h5>
-                        <h3>{{item.unitPriceMin}}<span>万元/m²</span><p>{{item.totalPriceMin}}-{{item.totalPriceMax}}㎡</p></h3>
+                        <h3>{{Math.round(item.unitPriceMin,2)}}<span>元/m²</span><p>{{item.totalPriceMin}}-{{item.totalPriceMax}}㎡</p></h3>
                     </div>
                 </div>
             </div>
@@ -325,6 +325,12 @@
         font-size: 24px;
         color: #b1b3b5;
         margin: 22px 0;
+    }
+    .build_detail>p{
+        width: 400px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .build_detail>h3{
         font-size: 32px;

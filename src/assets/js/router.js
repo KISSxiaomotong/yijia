@@ -15,6 +15,8 @@ import PreInfo from '../../components/house/PreInfo';
 import PreinfoDetail from '../../components/house/PreinfoDetail';
 import Help from '../../components/house/Help';
 import About from '../../components/about/About';
+import Agreement from '../../components/about/Agreement';
+import Privacy from '../../components/about/Privacy';
 import News from '../../components/news/News';
 import NewsDetail from '../../components/news/NewsDetail';
 import Asking from '../../components/answer/Asking';
@@ -58,6 +60,8 @@ export default new Router({
         { path: "/Asking", name: "Asking", component: Asking},
         { path: "/Answer", name: "Answer", component: Answer},
         { path: "/About", name: "About", component: About},
+        { path: "/Agreement", name: "Agreement", component: Agreement},
+        { path: "/Privacy", name: "Privacy", component: Privacy},
         { path: "/News", name: "News", component: News},
         { path: "/NewsDetail", name: "NewsDetail", component: NewsDetail},
         { path: "/Advice", name: "Advice", component: Advice},

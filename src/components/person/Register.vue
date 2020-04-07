@@ -14,7 +14,7 @@
         </div>
         <div class="other">
             <van-checkbox v-model="checked" shape="square" checked-color="#00c0eb">
-                <p class="p1">我已阅读并同意<router-link to="#">《注册协议》</router-link><router-link to="#">《隐私政策》</router-link></p>
+                <p class="p1">我已阅读并同意<router-link to="/Agreement">《注册协议》</router-link><router-link to="/Privacy">《隐私政策》</router-link></p>
             </van-checkbox>
             <input type="button" value="确认" @click="register()">
             <p class="p2">已有账号？<span @click="toLogin()">去登录</span></p>

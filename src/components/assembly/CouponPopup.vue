@@ -15,7 +15,7 @@
 </template>
 
 <script>
-    import { Toast } from 'vant';
+    import { Toast,Dialog } from 'vant';
     export default {
         name: "CouponPopup",
         data(){

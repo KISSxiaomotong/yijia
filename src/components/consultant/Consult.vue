@@ -19,7 +19,7 @@
                 <div class="consult_content">
                     <h4>{{item.name}}<p>{{item.university}}</p></h4>
                     <p>{{item.slogan}}</p>
-                    <span>在线咨询</span>
+                    <span @click.stop="openwin()">在线咨询</span>
                 </div>
                 <div class="consult_image">
                     <img :src="item.headPortrait">
@@ -55,6 +55,10 @@
                         id:id
                     }
                 })
+            },
+            openwin(){
+                let url = "http://p.qiao.baidu.com/cps/chat?siteId=14769106&userId=28493421";        //转向网页的地址;
+                window.location = url;
             }
         },
         mounted() {

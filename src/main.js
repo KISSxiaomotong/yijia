@@ -6,7 +6,7 @@ import '../src/assets/css/reset.css'
 import '../src/assets/css/border.css'
 import 'vant/lib/index.css'
 import '../src/assets/css/vant.css'
-import { DropdownMenu, DropdownItem, Checkbox, CheckboxGroup, Toast, Swipe, SwipeItem, Lazyload, DatetimePicker, Popup, Cell } from 'vant'
+import { DropdownMenu, DropdownItem, Checkbox, CheckboxGroup, Toast, Swipe, SwipeItem, Lazyload, DatetimePicker, Popup, Cell, Dialog } from 'vant'
 import { post, get } from '../src/assets/js/api';
 
 Vue.config.productionTip = false;
@@ -18,6 +18,7 @@ Vue.use(CheckboxGroup);
 Vue.use(SwipeItem);
 Vue.use(Checkbox);
 Vue.use(Lazyload);
+Vue.use(Dialog);
 Vue.use(Popup);
 Vue.use(Swipe);
 Vue.use(Toast);

@@ -27,11 +27,11 @@
             </div>
             <ul>
                 <li>
-                    <h3>{{properties.totalPriceMin}}<span>万元/m²</span></h3>
+                    <h3>{{properties.unitPriceMin}}<span>元/m²</span></h3>
                     <p>参考单价</p>
                 </li>
                 <li>
-                    <h3>{{properties.unitPriceMin}}<span>万元起</span></h3>
+                    <h3>{{properties.totalPriceMin}}<span>万元起</span></h3>
                     <p>参考总价</p>
                 </li>
                 <li>
@@ -55,8 +55,8 @@
                 <h2>基本信息</h2>
                 <div>
                     <p>楼盘名称：<span>{{properties.name}}</span></p>
-                    <p>参考总价：<span>{{properties.unitPriceMin}}-{{properties.unitPriceMax}}万元</span></p>
-                    <p>参考单价：<span>{{properties.totalPriceMin}}万元/m²起</span></p>
+                    <p>参考总价：<span>{{properties.totalPriceMin}}-{{properties.totalPriceMax}}万元</span></p>
+                    <p>参考单价：<span>{{properties.unitPriceMin}}元/m²起</span></p>
                     <p>物业类型：<span>{{type}}</span></p>
                     <p>户型：<span>{{apartment}}</span></p>
                     <p>建筑面积：<span>{{Math.round(properties.areaMin)}}-{{Math.round(properties.areaMax)}}m²</span></p>
@@ -127,7 +127,7 @@
                     <p>{{expertComment.cdate}}</p>
                 </div>
                 <div class="comment_right">
-                    <input type="button" value="沟通" id="communicate">
+                    <input type="button" value="沟通" id="communicate" @click.stop="openwin()">
                     <input type="button" value="留言" id="message" @click="message()">
                 </div>
             </div>
@@ -189,7 +189,7 @@
                     <p>{{item.university}}</p>
                 </div>
                 <div class="consult_right">
-                    <input type="button" value="在线咨询">
+                    <input type="button" value="在线咨询" @click.stop="openwin()">
                 </div>
             </div>
         </div>
@@ -216,17 +216,17 @@
                         <h4>{{item.name}}<span>在售</span></h4>
                         <p>地址：{{item.address}}</p>
                         <h5>{{item.opening | dateFormat()}} · {{item.opening | dateSub()}}</h5>
-                        <h3>{{item.unitPriceMin}}<span>万元/m²</span><p>{{item.areaMin}}-{{item.areaMax}}㎡</p></h3>
+                        <h3>{{item.unitPriceMin}}<span>元/m²</span><p>{{item.areaMin}}-{{item.areaMax}}㎡</p></h3>
                     </div>
                 </div>
             </div>
         </div>
         <div class="footer">
-            <div class="service">
+            <div class="service" @click="openwin()">
                 <h4>在线客服</h4>
             </div>
             <input type="button" id="see" value="预约看房" @click="appointment()">
-            <input type="button" id="consult" value="电话咨询">
+            <input type="button" id="consult" value="电话咨询" @click="callPhone()">
         </div>
         <Login ref="login" @toRegister="toRegister"></Login>
         <Register ref="register"  @toLogin="toLogin"></Register>
@@ -241,6 +241,7 @@
     export default {
         name: "SearchDetail",
         components: {Login,Register},
+        inject:['routerRefresh'],
         data(){
             return{
                 id:this.$route.query.id,
@@ -278,7 +279,16 @@
                 distance: 0,
                 type: "",
                 apartment: "",
-                coupon:{}
+                coupon:{
+                    label:null,
+                    title:null,
+                    body:null
+                }
+            }
+        },
+        watch: {
+            '$route' (to, from) {
+                this.routerRefresh();
             }
         },
         methods:{
@@ -292,10 +302,13 @@
                 this.now = index;
                 this.Search(this.facilities[index].title,this.point);
             },
-            createMap(){
+            createMap(lon,lat){
                 this.map = new BMap.Map("container");
-                this.point = new BMap.Point(115.833395,28.727375);
+                this.point = new BMap.Point(lon,lat);
                 this.map.centerAndZoom(this.point, 15);
+                this.Search(this.facilities[0].title,this.point);
+                this.setLocation(this.point);
+                this.countNum();
             },
             Search(search,mPoint){
                 let self = this;
@@ -352,11 +365,24 @@
                 let res = await this.post('properties/whole', {"id":this.id});
                 let images = [];
                 let detail = res.data.data;
-                Object.keys(detail.propertiesImgs).forEach(function(key){
-                    images.push(detail.propertiesImgs[key].picture);
-                });
+                for(let value of detail.xgt) {
+                    images.push(value.picture);
+                }
+                for(let value of detail.sjt) {
+                    images.push(value.picture);
+                }
+                for(let value of detail.hxt) {
+                    images.push(value.picture);
+                }
+                for(let value of detail.ybj) {
+                    images.push(value.picture);
+                }
                 this.images = images;
                 this.properties = detail.properties;
+                let position = this.properties.jwd.split(",");
+                let lon =  position[0];
+                let lat = position[1];
+                this.createMap(lon,lat);
                 let type = this.properties.type.split(",");
                 let apartment = this.properties.hxing.split(",");
                 for (let i = 0; i < type.length; i ++){
@@ -415,7 +441,9 @@
                     this.expertComment.cdate = this.expertComment.obj.cdate.substring(0,10);
                 }
                 this.price = detail.yfyj.represent;
-                this.coupon = detail.coupon;
+                if(res.hasOwnProperty('suspend')){
+                    this.coupon = detail.coupon;
+                }
             },
             setLocation(point){
                 let that = this;
@@ -544,14 +572,17 @@
                         id:id
                     }
                 })
+            },
+            openwin(){
+                let url = "http://p.qiao.baidu.com/cps/chat?siteId=14769106&userId=28493421";        //转向网页的地址;
+                window.location = url;
+            },
+            callPhone(){
+                window.location.href = 'tel://13188888888'
             }
         },
         mounted() {
             this.fetchData();
-            this.createMap();
-            this.Search(this.facilities[0].title,this.point);
-            this.setLocation(this.point);
-            this.countNum();
         },
         filters:{
             dateFormat(datestr){
@@ -594,7 +625,8 @@
         height: 88px;
         line-height: 88px;
         float: left;
-        padding-left: 182px;
+        width: 566px;
+        text-align: center;
     }
     .header>img{
         width: 36px;
@@ -791,7 +823,6 @@
     }
     .apartment{
         width: 690px;
-        height: 550px;
         margin: 0 auto;
     }
     .apartment_title{
@@ -824,10 +855,23 @@
     }
     .apartment_content{
         width: 690px;
-        height: 398px;
+        zoom: 1;
+    }
+    .apartment_content:after{
+        display:block;
+        clear:both;
+        content:"";
+        visibility:hidden;
+        height:0
     }
     .apartment_content>div{
+        margin-bottom: 20px;
+    }
+    .apartment_content>div:nth-child(2n+1){
         float: left;
+    }
+    .apartment_content>div:nth-child(2n){
+        float: right;
     }
     .apartment_content>div>img{
         width: 334px;
@@ -1426,6 +1470,12 @@
         font-size: 24px;
         color: #b1b3b5;
         margin: 22px 0;
+    }
+    .recommend_detail>p{
+        width: 400px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .recommend_detail>h3{
         font-size: 32px;

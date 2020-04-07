@@ -6,7 +6,46 @@
                 <h2>户型详情</h2>
             </div>
         </header>
-        <div class="content" v-html="detail.details">
+        <div class="content">
+            <div class="content_image">
+                <img :src="detail.imgs">
+            </div>
+            <div class="content_middle">
+                <div class="content_title">
+                   <div>
+                       <h2>{{detail.title}}</h2>
+                       <span>在售</span>
+                   </div>
+                    <ul>
+                        <li>别墅</li>
+                        <li>商圈</li>
+                    </ul>
+                </div>
+                <table>
+                    <tr>
+                        <td>参考总价：</td>
+                        <td>{{detail.sumPrice}}</td>
+                        <td>单价：</td>
+                        <td>{{detail.unitPrice}}元/m²</td>
+                    </tr>
+                    <tr>
+                        <td>建筑面积：</td>
+                        <td>{{detail.area}}m²</td>
+                        <td>房屋朝向：</td>
+                        <td>{{detail.orientation}}</td>
+                    </tr>
+                    <tr>
+                        <td>层高：</td>
+                        <td>{{detail.cheight}}</td>
+                        <td>类型：</td>
+                        <td>{{detail.type}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="content_detail">
+                <h2>居室详解</h2>
+                <p>{{detail.details}}</p>
+            </div>
         </div>
     </div>
 </template>
@@ -70,14 +109,64 @@
         width: 690px;
         margin: 40px auto 0;
     }
-    .content >>> img{
+    .content_image{
         width: 690px;
-        height: 460px;
+        padding: 30px 0;
+    }
+    .content_image>img{
+        width: 690px;
+    }
+    .content_title>div{
+        height: 40px;
+        line-height: 40px;
+    }
+    .content_title>div>h2{
+        font-size: 30px;
+        font-weight: bold;
+        float: left;
+    }
+    .content_title>div>span{
+        font-size: 24px;
+        float: left;
+        color: #ef3e4a;
+        padding: 0 6px;
+        margin-left: 12px;
+        background-color: #ffe8ea;
+    }
+    .content_title>ul{
+        font-size: 24px;
+        height: 30px;
+        margin: 20px 0;
+        line-height: 30px;
+    }
+    .content_title>ul>li{
+        float: left;
+        padding: 4px 6px;
+        color: #999999;
+        margin-right: 12px;
+        background-color: #f3f5f7;
+    }
+    .content_middle>table>tr{
+        height: 50px;
+        font-size: 30px;
+        line-height: 50px;
+    }
+    .content_middle>table>tr>td:nth-child(2n+1){
+        width: 160px;
+    }
+    .content_middle>table>tr>td:nth-child(2n){
+        width: 180px;
+    }
+    .content_detail{
+        margin-top: 30px;
+    }
+    .content_detail>h2{
+        font-size: 36px;
+        font-weight: bold;
         margin-bottom: 30px;
     }
-    .content>p{
-        font-size: 26px;
-        color: #666666;
-        line-height: 70px;
+    .content_detail>p{
+        font-size: 24px;
+        line-height: 30px;
     }
 </style>

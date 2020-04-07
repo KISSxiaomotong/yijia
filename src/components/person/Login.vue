@@ -19,7 +19,7 @@
 <script>
     import { Toast } from 'vant';
     export default {
-        name: "Register",
+        name: "Login",
         data() {
             return {
                 loginShow: false,
@@ -38,7 +38,6 @@
                 this.$emit('toRegister');
             },
             login: async function (){
-                let res = await this.post('user/signin', {"phone":this.phone,"passWord":this.password});
                 if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
                     Toast('手机号格式不正确！');
                     return false;
@@ -47,6 +46,7 @@
                     Toast('请填写密码！');
                     return false;
                 }
+                let res = await this.post('user/signin', {"phone":this.phone,"passWord":this.password});
                 res = res.data;
                 if(res.code == 200){
                     let user = res.data;

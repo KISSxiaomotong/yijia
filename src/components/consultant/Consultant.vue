@@ -14,7 +14,7 @@
                     <h3>{{detail.name}}</h3>
                     <p>{{detail.university}}</p>
                 </div>
-                <input type="button" value="在线咨询">
+                <input type="button" value="在线咨询" @click.stop="openwin()">
             </div>
             <div class="desc">
                 <p>{{detail.slogan}}</p>
@@ -44,6 +44,10 @@
             fetchData: async function (){
                 let res = await this.post('expert/selbyid',{"id":this.id});
                 this.detail = res.data.data;
+            },
+            openwin(){
+                let url = "http://p.qiao.baidu.com/cps/chat?siteId=14769106&userId=28493421";        //转向网页的地址;
+                window.location = url;
             }
         },
         mounted() {

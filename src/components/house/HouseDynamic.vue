@@ -19,11 +19,11 @@
             </div>
         </div>
         <div class="footer">
-            <div class="service">
+            <div class="service" @click="openwin()">
                 <h4>在线客服</h4>
             </div>
             <input type="button" class="see" value="预约看房" @click="appointment()">
-            <input type="button" class="consult" value="电话咨询">
+            <input type="button" class="consult" value="电话咨询" @click="callPhone()">
         </div>
     </div>
 </template>
@@ -54,6 +54,13 @@
             },
             appointment(){
                 this.$router.push('/Appointment')
+            },
+            openwin(){
+                let url = "http://p.qiao.baidu.com/cps/chat?siteId=14769106&userId=28493421";        //转向网页的地址;
+                window.location = url;
+            },
+            callPhone(){
+                window.location.href = 'tel://13188888888'
             }
         },
         mounted() {

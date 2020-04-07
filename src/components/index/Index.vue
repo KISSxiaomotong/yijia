@@ -42,7 +42,7 @@
                     </div>
                     <h3>{{item.title}}</h3>
                     <span>{{Math.round(item.areaMin)}}-{{Math.round(item.areaMax)}}㎡</span>
-                    <p>{{item.unitPriceMin}}<span>万元/m²</span></p>
+                    <p>{{item.unitPriceMin}}<span>元/m²</span></p>
                 </div>
             </div>
         </div>
@@ -66,7 +66,7 @@
                     </div>
                     <h3>{{item.title}}</h3>
                     <span>{{Math.round(item.areaMin)}}-{{Math.round(item.areaMax)}}㎡</span>
-                    <p>{{item.unitPriceMin}}<span>万元/m²</span></p>
+                    <p>{{item.unitPriceMin}}<span>元/m²</span></p>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
                <div class="consult_content">
                    <h4>{{consult.name}}<p>{{consult.university}}</p></h4>
                    <p>{{consult.slogan}}</p>
-                   <span>在线咨询</span>
+                   <span @click.stop="openwin()">在线咨询</span>
                </div>
                 <div class="consult_image">
                     <img :src="consult.headPortrait">
@@ -112,10 +112,11 @@
                         <h4>{{item.name}}<span>在售</span></h4>
                         <p>地址：{{item.address}}</p>
                         <h5>{{item.opening | dateFormat()}} · {{item.opening}}</h5>
-                        <h3>{{item.unitPriceMin}}<span>万元/m²</span><p>{{item.totalPriceMin}}-{{item.totalPriceMax}}㎡</p></h3>
+                        <h3>{{item.unitPriceMin}}<span>元/m²</span><p>{{item.totalPriceMin}}-{{item.totalPriceMax}}㎡</p></h3>
                     </div>
                 </div>
             </div>
+            <p class="record"><a href="http://www.beian.miit.gov.cn" target="_blank">鄂ICP备20003183号</a></p>
         </div>
         <Footer></Footer>
         <CouponPopup ref="coupon"></CouponPopup>
@@ -421,10 +422,16 @@
                 }else{
                     this.consult = this.consultation[k];
                 }
-            }
+            },
+            openwin(){
+                let url = "http://p.qiao.baidu.com/cps/chat?siteId=14769106&userId=28493421";        //转向网页的地址;
+                window.location = url;
+            },
         },
         mounted (){
-            this.openCoupon();
+            setTimeout(() => {
+                this.openCoupon();
+            },40000);
             this.fetchData();
             this.fetchArea();
             this.fetchPriceArea();
@@ -617,13 +624,13 @@
     .position>p{
         top: 0;
         left: 0;
-        width: 84px;
         height: 30px;
         line-height: 30px;
         font-size: 18px;
         text-align: center;
         position: absolute;
         color: #ffffff;
+        padding: 0 5px;
         background-color: #ef3e4a;
     }
     .recommend_content>div>h3{
@@ -914,6 +921,12 @@
         color: #b1b3b5;
         margin: 22px 0;
     }
+    .build_detail>p{
+        width: 400px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
     .build_detail>h3{
         font-size: 32px;
         font-weight: bold;
@@ -928,5 +941,13 @@
         font-size: 24px;
         color: #98999c;
         margin-left: 24px;
+    }
+    .record{
+        font-size: 24px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .record>a{
+        color: #888888;
     }
 </style>

@@ -33,7 +33,7 @@
         name: "HouseStory",
         data(){
             return{
-                lists: ""
+                lists: {}
             }
         },
         methods:{
