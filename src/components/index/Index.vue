@@ -103,18 +103,22 @@
                     <van-dropdown-item v-model="checkedHouseOrder" :options="houseOrder" @change="changeOrder()"/>
                 </van-dropdown-menu>
             </div>
-            <div class="build_content">
-                <div v-for="(item,index) in house" :key="index" @click="toHouse(item.id)">
-                    <div class="build_image">
-                        <img :src="item.cover">
+            <div id="pull">
+                <pull-to :bottom-load-method="more" :is-top-bounce=topBounce class="file_lists">
+                    <div class="build_content">
+                        <div v-for="(item,index) in house" :key="index" @click="toHouse(item.id)">
+                            <div class="build_image">
+                                <img :src="item.cover">
+                            </div>
+                            <div class="build_detail">
+                                <h4>{{item.name}}<span>在售</span></h4>
+                                <p>地址：{{item.address}}</p>
+                                <h5>{{item.opening | dateFormat()}} · {{item.opening}}</h5>
+                                <h3>{{item.unitPriceMin}}<span>元/m²</span><p>{{item.areaMin}}-{{item.areaMax}}㎡</p></h3>
+                            </div>
+                        </div>
                     </div>
-                    <div class="build_detail">
-                        <h4>{{item.name}}<span>在售</span></h4>
-                        <p>地址：{{item.address}}</p>
-                        <h5>{{item.opening | dateFormat()}} · {{item.opening}}</h5>
-                        <h3>{{item.unitPriceMin}}<span>元/m²</span><p>{{item.totalPriceMin}}-{{item.totalPriceMax}}㎡</p></h3>
-                    </div>
-                </div>
+                </pull-to>
             </div>
             <p class="record"><a href="http://www.beian.miit.gov.cn" target="_blank">鄂ICP备20003183号</a></p>
         </div>
@@ -130,9 +134,10 @@
     import CouponPopup from "../assembly/CouponPopup";
     import Login from "../person/Login";
     import Register from "../person/Register";
+    import PullTo from 'vue-pull-to'
     export default {
         name: 'Index',
-        components: {Footer,CouponPopup,Login,Register},
+        components: {Footer,CouponPopup,Login,Register,PullTo},
         props: {
 
         },
@@ -206,7 +211,11 @@
                 consult: {},
                 consultation: {},
                 house: [],
-                news: {}
+                news: {},
+                map:{},
+                page:1,
+                num:6,
+                topBounce:false
             }
         },
         methods: {
@@ -216,15 +225,19 @@
                     this.house = res.data.data.objs;
                 }else{
                     let res = await this.post('properties/selpage', {"current":1,"num":6,"regionId":this.checkedHouseArea});
+                    this.map = {"regionId":this.checkedHouseArea};
+                    this.reset("area");
                     this.house = res.data.data.objs;
                 }
             },
             changePrice: async function (){
                 let price = this.checkedHousePrice;
                 price = price.split(",");
-                let unitPriceMin = price[0];
-                let unitPriceMax = price[1];
-                let res = await this.post('properties/selpage', {"current":1,"num":6,"unitPriceMin":unitPriceMin,"unitPriceMax":unitPriceMax});
+                let totalPriceMin = price[0];
+                let totalPriceMax = price[1];
+                let res = await this.post('properties/selpage', {"current":1,"num":6,"totalPriceMin":totalPriceMin,"totalPriceMax":totalPriceMax});
+                this.map = {"totalPriceMin":totalPriceMin,"totalPriceMax":totalPriceMax};
+                this.reset("price");
                 this.house = res.data.data.objs;
             },
             changeApartment: async function (){
@@ -233,16 +246,19 @@
                     this.house = res.data.data.objs;
                 }else{
                     let res = await this.post('properties/selpage', {"current":1,"num":6,"hxing":this.checkedHouseApartment});
+                    this.map = {"hxing":this.checkedHouseApartment};
+                    this.reset("apartment");
                     this.house = res.data.data.objs;
                 }
-
             },
             changeScreen: async function (){
                 let screen = this.checkedHouseScreen;
                 screen = screen.split(",");
-                let unitAreaMin = screen[0];
-                let unitAreaMax = screen[1];
-                let res = await this.post('properties/selpage', {"current":1,"num":6,"unitAreaMin":unitAreaMin,"unitAreaMax":unitAreaMax});
+                let areaMin = screen[0];
+                let areaMax = screen[1];
+                let res = await this.post('properties/selpage', {"current":1,"num":6,"areaMin":areaMin,"areaMax":areaMax});
+                this.map = {"areaMin":areaMin,"areaMax":areaMax};
+                this.reset("screen");
                 this.house = res.data.data.objs;
             },
             changeOrder: async function (){
@@ -260,7 +276,7 @@
                     let res = await this.post('properties/selpage', {"current":1,"num":6,"cdateIsAsc": true});
                     this.house = res.data.data.objs;
                 }
-
+                this.reset("order");
             },
             changePriceArea: async function(){
                 if(this.checkedPriceArea == 0){
@@ -348,15 +364,11 @@
                 });
                 this.consultation = consultation;
                 this.consult = consultation[0];
-                let house = res.tj;
-                if(house.length >= 6){
-                    for (let i=0;i<6;i++){
-                        this.house.push(house[i]);
-                    }
-                }else{
-                    this.house = house;
-                }
                 this.news = res.zx;
+            },
+            fetchHouse: async function (){
+                let res = await this.post('properties/selpage', {"current":1,"num":this.num * this.page});
+                this.house = res.data.data.objs;
             },
             search: async function (event){
                 if(event.keyCode == 13){
@@ -427,12 +439,44 @@
                 let url = "http://p.qiao.baidu.com/cps/chat?siteId=14769106&userId=28493421";        //转向网页的地址;
                 window.location = url;
             },
+            more: async function(loaded){
+                this.page++;
+                this.map.current = 1;
+                this.map.num = this.num * this.page;
+                let res = await this.post('properties/selpage', this.map);
+                if(res.data.code == 200){
+                    this.house = res.data.data.objs;
+                    loaded('done')
+                }else{
+                    this.page--;
+                    loaded('fail')
+                }
+            },
+            reset(type)
+            {
+                if(type != "area"){
+                    this.checkedHouseArea = 0;
+                }
+                if(type != "price"){
+                    this.checkedHousePrice = '0,3000'
+                }
+                if(type != "apartment"){
+                    this.checkedHouseApartment = 0;
+                }
+                if(type != "screen"){
+                    this.checkedHouseScreen = '0,2000';
+                }
+                if(type != "order"){
+                    this.checkedHouseOrder = 0;
+                }
+            }
         },
         mounted (){
             setTimeout(() => {
                 this.openCoupon();
             },40000);
             this.fetchData();
+            this.fetchHouse();
             this.fetchArea();
             this.fetchPriceArea();
             this.ejectLogin();
@@ -448,7 +492,6 @@
 <style scoped>
     #index{
         width: 750px;
-        background: #ffffff;
     }
     .header{
         height: 420px;
@@ -916,13 +959,18 @@
         margin-left: 14px;
         padding: 0 10px;
     }
-    .build_detail>p,.build_detail>h5{
+    .build_detail>h5{
         font-size: 24px;
         color: #b1b3b5;
         margin: 22px 0;
     }
     .build_detail>p{
         width: 400px;
+        font-size: 24px;
+        height: 38px;
+        line-height: 38px;
+        color: #b1b3b5;
+        margin: 15px 0;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -949,5 +997,8 @@
     }
     .record>a{
         color: #888888;
+    }
+    #pull{
+        height: 1000px;
     }
 </style>

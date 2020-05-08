@@ -121,6 +121,10 @@
         line-height: 40px;
         color: #888888;
         margin: 24px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
     .info_left>span{
         font-size: 24px;

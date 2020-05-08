@@ -38,6 +38,8 @@ import ExpertComment from '../../components/house/ExpertComment';
 import Apartment from '../../components/house/Apartment';
 import ApartmentDetail from '../../components/house/ApartmentDetail';
 import EditInfo from '../../components/person/EditInfo';
+import Album from '../../components/house/Album';
+import InfoDetail from '../../components/house/InfoDetail';
 
 Vue.use(Router) //使用vue-router
 
@@ -80,9 +82,11 @@ export default new Router({
         { path: "/ExpertComment", name: "ExpertComment", component:ExpertComment},
         { path: "/Apartment", name: "Apartment", component:Apartment},
         { path: "/ApartmentDetail", name: "ApartmentDetail", component:ApartmentDetail},
-        { path: "/EditInfo", name: "EditInfo", component:EditInfo}
+        { path: "/EditInfo", name: "EditInfo", component:EditInfo},
+        { path: "/Album", name: "Album", component:Album},
+        { path: "/InfoDetail", name: "InfoDetail", component:InfoDetail}
     ],
-    scrollBehavior (to, from, savedPosition) {
+    scrollBehavior (to, from) {
         return { x: 0, y: 0 }
     }
 })

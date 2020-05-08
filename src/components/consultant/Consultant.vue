@@ -161,7 +161,20 @@
         padding: 48px 0 48px 28px;
         font-weight: bold;
     }
+    .bottom>div{
+        padding: 0 28px;
+    }
     .bottom >>> img{
         width: 690px;
+    }
+    .bottom >>> h1{
+        font-size: 24px;
+        line-height: 40px;
+        color: #999999;
+    }
+    .bottom >>> p{
+        font-size: 24px;
+        line-height: 40px;
+        color: #999999;
     }
 </style>

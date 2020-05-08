@@ -19,18 +19,22 @@
                     <van-dropdown-item v-model="checkedOrder" :options="order" @change="changeOrder()"/>
                 </van-dropdown-menu>
             </div>
-            <div class="build_content">
-                <div v-for="(item,index) in lists" :key="index" @click="show(item.id)">
-                    <div class="build_image">
-                        <img :src="item.cover">
+            <div id="pull">
+                <pull-to :top-load-method="refresh" :bottom-load-method="more" class="file_lists">
+                    <div class="build_content">
+                        <div v-for="(item,index) in lists" :key="index" @click="show(item.id)">
+                            <div class="build_image">
+                                <img :src="item.cover">
+                            </div>
+                            <div class="build_detail">
+                                <h4>{{item.name}}<span>在售</span></h4>
+                                <p>地址：{{item.address}}</p>
+                                <h5>{{item.opening | dateFormat()}} · {{item.opening}}</h5>
+                                <h3>{{item.unitPriceMin}}<span>元/m²</span><p>{{item.areaMin}}-{{item.areaMax}}㎡</p></h3>
+                            </div>
+                        </div>
                     </div>
-                    <div class="build_detail">
-                        <h4>{{item.name}}<span>在售</span></h4>
-                        <p>地址：{{item.address}}</p>
-                        <h5>{{item.opening | dateFormat()}} · {{item.opening}}</h5>
-                        <h3>{{Math.round(item.unitPriceMin,2)}}<span>元/m²</span><p>{{item.totalPriceMin}}-{{item.totalPriceMax}}㎡</p></h3>
-                    </div>
-                </div>
+                </pull-to>
             </div>
         </div>
         <Footer></Footer>
@@ -43,9 +47,10 @@
     import Login from "../person/Login";
     import Register from "../person/Register";
     import Footer from "../assembly/Footer";
+    import PullTo from 'vue-pull-to'
     export default {
         name: "HouseSearch",
-        components: {Footer,Login,Register},
+        components: {Footer,Login,Register,PullTo},
         data (){
             return {
                 name: this.$route.query.name,
@@ -89,7 +94,10 @@
                 checkedApartment: 0,
                 checkedScreen: '0,2000',
                 checkedOrder: 0,
-                lists: {}
+                lists: {},
+                page:1,
+                num:10,
+                map:{}
             }
         },
         methods: {
@@ -102,15 +110,19 @@
                     this.lists = res.data.data.objs;
                 }else{
                     let res = await this.post('properties/selpage', {"current":1,"num":10,"regionId":this.checkedArea});
+                    this.map = {"regionId":this.checkedArea};
+                    this.reset("area");
                     this.lists = res.data.data.objs;
                 }
             },
             changePrice: async function (){
                 let price = this.checkedPrice;
                 price = price.split(",");
-                let unitPriceMin = price[0];
-                let unitPriceMax = price[1];
-                let res = await this.post('properties/selpage', {"current":1,"num":10,"unitPriceMin":unitPriceMin,"unitPriceMax":unitPriceMax});
+                let totalPriceMin = price[0];
+                let totalPriceMax = price[1];
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"totalPriceMin":totalPriceMin,"totalPriceMax":totalPriceMax});
+                this.map = {"totalPriceMin":totalPriceMin,"totalPriceMax":totalPriceMax};
+                this.reset("price");
                 this.lists = res.data.data.objs;
             },
             changeApartment: async function (){
@@ -119,6 +131,8 @@
                     this.lists = res.data.data.objs;
                 }else{
                     let res = await this.post('properties/selpage', {"current":1,"num":10,"hxing":this.checkedApartment});
+                    this.map = {"hxing":this.checkedApartment};
+                    this.reset("apartment");
                     this.lists = res.data.data.objs;
                 }
 
@@ -126,9 +140,11 @@
             changeScreen: async function (){
                 let screen = this.checkedScreen;
                 screen = screen.split(",");
-                let unitAreaMin = screen[0];
-                let unitAreaMax = screen[1];
-                let res = await this.post('properties/selpage', {"current":1,"num":10,"unitAreaMin":unitAreaMin,"unitAreaMax":unitAreaMax});
+                let areaMin = screen[0];
+                let areaMax = screen[1];
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"areaMin":areaMin,"areaMax":areaMax});
+                this.map = {"areaMin":areaMin,"areaMax":areaMax};
+                this.reset("screen");
                 this.lists = res.data.data.objs;
             },
             changeOrder: async function (){
@@ -138,17 +154,21 @@
                     this.lists = res.data.data.objs;
                 }else if(order == 1){
                     let res = await this.post('properties/selpage', {"current":1,"num":10,"totalIsAsc": true});
+                    this.map = {"totalIsAsc": true};
                     this.lists = res.data.data.objs;
                 }else if(order == 2){
                     let res = await this.post('properties/selpage', {"current":1,"num":10,"unitIsAsc": true});
+                    this.map = {"unitIsAsc": true};
                     this.lists = res.data.data.objs;
                 }else if(order == 3){
                     let res = await this.post('properties/selpage', {"current":1,"num":10,"cdateIsAsc": true});
+                    this.map = {"cdateIsAsc": true};
                     this.lists = res.data.data.objs;
                 }
+                this.reset("order");
             },
             fetchData: async function (){
-                let res = await this.post('properties/selpage', {"current":1,"num":10});
+                let res = await this.post('properties/selpage', {"current":1,"num":this.num * this.page});
                 this.lists = res.data.data.objs;
             },
             fetchArea: async function (){
@@ -166,6 +186,7 @@
                 if(event.keyCode == 13){
                     let res = await this.post('properties/selpage', {"current":1,"num":10,"name":this.name});
                     this.lists = res.data.data.objs;
+                    this.map = {"name":this.name};
                 }
             },
             show(id){
@@ -188,6 +209,7 @@
                 if(this.name !== undefined){
                     let res = await this.post('properties/selpage', {"current":1,"num":10,"name":this.name});
                     this.lists = res.data.data.objs;
+                    this.map = {"name":this.name};
                 }
             },
             checkLogin(){
@@ -206,11 +228,54 @@
                 this.$refs.login.loginClose();
                 this.$refs.register.registerOpen();
             },
+            refresh: async function(loaded){
+                let res = await this.post('properties/selpage', {"current":1,"num":10});
+                if(res.data.code == 200){
+                    this.lists = res.data.data.objs;
+                    loaded('done')
+                }else{
+                    loaded('fail')
+                }
+            },
+            more: async function(loaded){
+                this.page++;
+                this.map.current = 1;
+                this.map.num = this.num * this.page;
+                let res = await this.post('properties/selpage', this.map);
+                if(res.data.code == 200){
+                    this.lists = res.data.data.objs;
+                    loaded('done')
+                }else{
+                    this.page--;
+                    loaded('fail')
+                }
+            },
+            reset(type)
+            {
+                if(type != "area"){
+                    this.checkedArea = 0;
+                }
+                if(type != "price"){
+                    this.checkedPrice = '0,3000'
+                }
+                if(type != "apartment"){
+                    this.checkedApartment = 0;
+                }
+                if(type != "screen"){
+                    this.checkedScreen = '0,2000';
+                }
+                if(type != "order"){
+                    this.checkedOrder = 0;
+                }
+            }
         },
         mounted() {
-            this.fetchData();
             this.fetchArea();
-            this.toSearch();
+            if(this.name !== undefined){
+                this.toSearch();
+            }else{
+                this.fetchData();
+            }
         },
         filters:{
             dateFormat(datestr){
@@ -232,11 +297,11 @@
     .header>div{
         width: 690px;
         height: 60px;
-        margin: 30px 0;
+        padding: 30px 0;
         background-image: url("../../assets/images/person/left_arrow.png");
         background-repeat: no-repeat;
         background-size: 24px 36px;
-        background-position-y: 10px;
+        background-position-y: 40px;
     }
     .back{
         height: 62px;
@@ -276,7 +341,7 @@
     }
     .build{
         width: 690px;
-        margin: 0 auto 120px;
+        margin: 0 auto;
     }
     .build_select{
         width: 690px;
@@ -289,7 +354,7 @@
     .build_content>div{
         width: 690px;
         height: 200px;
-        margin-bottom: 60px;
+        margin-bottom: 50px;
     }
     .build_image{
         width: 240px;
@@ -321,13 +386,18 @@
         margin-left: 14px;
         padding: 0 10px;
     }
-    .build_detail>p,.build_detail>h5{
+    .build_detail>h5{
         font-size: 24px;
         color: #b1b3b5;
         margin: 22px 0;
     }
     .build_detail>p{
         width: 400px;
+        font-size: 24px;
+        height: 38px;
+        line-height: 38px;
+        color: #b1b3b5;
+        margin: 15px 0;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -346,5 +416,10 @@
         font-size: 24px;
         color: #98999c;
         margin-left: 24px;
+    }
+    #pull{
+        position: fixed;
+        height: 1000px;
+        z-index: -1;
     }
 </style>

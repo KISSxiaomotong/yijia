@@ -94,6 +94,7 @@
     }
     .user_right{
         float: left;
+        width: 590px;
         margin-left: 20px;
     }
     .user_right>h4{

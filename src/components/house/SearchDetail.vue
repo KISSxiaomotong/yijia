@@ -7,7 +7,7 @@
                 <img src="../../assets/images/house/user.png" @click="center()">
             </div>
         </header>
-        <div class="swipe">
+        <div class="swipe" @click="toAlbum(id)">
             <van-swipe class="my-swipe" :autoplay="3000" @change="onChange">
                 <van-swipe-item v-for="(image, index) in images" :key="index">
                     <img v-lazy="image" />
@@ -42,7 +42,7 @@
         </div>
         <div class="get">
             <div class="get_left">
-                <p><span>{{coupon.label}}</span>{{coupon.title}}</p>
+                <p><span>{{coupon.label}}</span></p>
                 <h3>{{coupon.body}}</h3>
             </div>
             <div class="get_right">
@@ -52,7 +52,10 @@
         <div class="fill"></div>
         <div id="house">
             <div class="house">
-                <h2>基本信息</h2>
+                <div class="house_title">
+                    <h2>基本信息</h2>
+                    <router-link :to="{path:'/InfoDetail',query:{id:this.id}}"><h3>查看更多</h3></router-link>
+                </div>
                 <div>
                     <p>楼盘名称：<span>{{properties.name}}</span></p>
                     <p>参考总价：<span>{{properties.totalPriceMin}}-{{properties.totalPriceMax}}万元</span></p>
@@ -60,6 +63,8 @@
                     <p>物业类型：<span>{{type}}</span></p>
                     <p>户型：<span>{{apartment}}</span></p>
                     <p>建筑面积：<span>{{Math.round(properties.areaMin)}}-{{Math.round(properties.areaMax)}}m²</span></p>
+                    <p>地铁站：<span>{{properties.metroId}}</span></p>
+                    <p>区域：<span>{{properties.regionId}}</span></p>
                     <h4>楼盘地址：<span>{{properties.address}}</span></h4>
                 </div>
             </div>
@@ -133,9 +138,6 @@
             </div>
             <div class="comment_middle">
                 <p>{{expertComment.comment}}</p>
-            </div>
-            <div class="comment_bottom">
-                <span>展开全文</span>
             </div>
         </div>
         <div class="fill"></div>
@@ -230,17 +232,18 @@
         </div>
         <Login ref="login" @toRegister="toRegister"></Login>
         <Register ref="register"  @toLogin="toLogin"></Register>
+        <Coupon ref="coupon"></Coupon>
     </div>
 </template>
 
 <script>
-    import { Toast } from 'vant';
     import Login from "../person/Login";
+    import Coupon from "../assembly/GetCoupon";
     import Register from "../person/Register";
     import BMap from 'BMap';
     export default {
         name: "SearchDetail",
-        components: {Login,Register},
+        components: {Login,Register,Coupon},
         inject:['routerRefresh'],
         data(){
             return{
@@ -272,7 +275,12 @@
                 propertiesWws: {},
                 experts: {},
                 propertiesList: [],
-                expertComment: [],
+                expertComment: {
+                    headPortrait:null,
+                    name:null,
+                    cdate:"",
+                    comment:null
+                },
                 userComment: [],
                 price: "",
                 location: "",
@@ -282,7 +290,8 @@
                 coupon:{
                     label:null,
                     title:null,
-                    body:null
+                    body:null,
+                    id:0
                 }
             }
         },
@@ -301,6 +310,14 @@
             change(index){
                 this.now = index;
                 this.Search(this.facilities[index].title,this.point);
+            },
+            toAlbum(id){
+                this.$router.push({
+                    path:'/Album',
+                    query:{
+                        id:id
+                    }
+                })
             },
             createMap(lon,lat){
                 this.map = new BMap.Map("container");
@@ -385,27 +402,42 @@
                 this.createMap(lon,lat);
                 let type = this.properties.type.split(",");
                 let apartment = this.properties.hxing.split(",");
-                for (let i = 0; i < type.length; i ++){
-                    if(type[i] == 1){
-                        this.type = this.type + "一居 ";
-                    }
-                    if(type[i] == 2){
-                        this.type = this.type + "二居 ";
-                    }
-                    if(type[i] == 3){
-                        this.type = this.type + "三居 ";
-                    }
-                }
                 for (let i = 0; i < apartment.length; i ++){
                     if(apartment[i] == 1){
-                        this.apartment = this.apartment + "住宅 ";
+                        this.apartment = this.apartment + "一居 ";
                     }
                     if(apartment[i] == 2){
-                        this.apartment = this.apartment + "别墅 ";
+                        this.apartment = this.apartment + "二居 ";
                     }
                     if(apartment[i] == 3){
-                        this.apartment = this.apartment + "商办 ";
+                        this.apartment = this.apartment + "三居 ";
                     }
+                    if(apartment[i] == 4){
+                        this.apartment = this.apartment + "四居 ";
+                    }
+                    if(apartment[i] == 5){
+                        this.apartment = this.apartment + "五居及以上 ";
+                    }
+                }
+                for (let i = 0; i < type.length; i ++){
+                    if(type[i] == 1){
+                        this.type = this.type + "住宅 ";
+                    }
+                    if(type[i] == 2){
+                        this.type = this.type + "别墅 ";
+                    }
+                    if(type[i] == 3){
+                        this.type = this.type + "商办 ";
+                    }
+                    if(type[i] == 4){
+                        this.type = this.type + "商铺 ";
+                    }
+                    if(type[i] == 5){
+                        this.type = this.type + "写字楼 ";
+                    }
+                }
+                if(detail.hasOwnProperty('coupon')){
+                    this.coupon = detail.coupon;
                 }
                 this.label = this.properties.label.split(",");
                 this.houseShapes = detail.houseShapes;
@@ -428,7 +460,15 @@
                 }
                 let propertiesComments = detail.propertiesComments;
                 Object.keys(propertiesComments).forEach(function(key){
-                    if (propertiesComments[key].commentId == 1) {
+                    if (propertiesComments[key].type == 1) {
+                        if(propertiesComments[key].obj == null){
+                            propertiesComments[key].obj = {
+                                headPortrait:null,
+                                name:null,
+                                cdate:"",
+                                comment:null
+                            }
+                        }
                         that.userComment.push(propertiesComments[key]);
                     }else {
                         that.expertComment.push(propertiesComments[key]);
@@ -441,9 +481,6 @@
                     this.expertComment.cdate = this.expertComment.obj.cdate.substring(0,10);
                 }
                 this.price = detail.yfyj.represent;
-                if(res.hasOwnProperty('suspend')){
-                    this.coupon = detail.coupon;
-                }
             },
             setLocation(point){
                 let that = this;
@@ -545,19 +582,8 @@
                 this.$refs.login.loginClose();
                 this.$refs.register.registerOpen();
             },
-            getCoupon: async function (){
-                if(this.checkLogin()){
-                    let user = JSON.parse(window.localStorage.getItem('user'));
-                    let phone = user.phone;
-                    let res = await this.post('userCoupon/receive', {"phone": phone,"cid":this.coupon.id});
-                    if(res.data.code === 200){
-                        Toast("领取成功！");
-                    }else{
-                        Toast("已经领取过了！");
-                    }
-                }else{
-                    this.toLogin();
-                }
+            getCoupon() {
+                this.$refs.coupon.couponOpen(this.coupon.id);
             },
             comment(){
                 this.$router.push('/Comment');
@@ -749,7 +775,6 @@
         height: 36px;
         line-height: 36px;
         margin: 26px 0 10px;
-        font-size: 28px;
         color: #ffffff;
     }
     .get_left>p>span{
@@ -760,7 +785,7 @@
         background-color: rgba(250,193,143,0.8);
     }
     .get_left>h3{
-        font-size: 32px;
+        font-size: 28px;
         margin-top: 12px;
         color: #ffffff;
     }
@@ -784,19 +809,40 @@
     }
     #house{
         width: 750px;
-        height: 345px;
         margin-top: 20px;
         background-color: #ffffff;
     }
     .house{
         width: 690px;
-        height: 345px;
         margin: 0 auto;
     }
-    .house>h2{
-        font-size: 40px;
-        padding: 40px 0;
+    .house_title{
+        width: 690px;
+        height: 60px;
+        margin: 0 auto;
+        padding: 36px 0;
+    }
+    .house_title>h2{
+        font-size: 38px;
+        height: 60px;
+        line-height: 60px;
         font-weight: bold;
+        float: left;
+    }
+    .house_title>a{
+        width: 120px;
+        float: right;
+        font-size: 24px;
+        color: #999999;
+    }
+    .house_title>a>h3{
+        height:40px;
+        line-height: 40px;
+        background-repeat: no-repeat;
+        background-size: 22px 22px;
+        background-position-x: 100px;
+        background-position-y: 10px;
+        background-image: url("../../assets/images/right_arrow.png");
     }
     .house>div>p{
         font-size: 24px;
@@ -1083,7 +1129,7 @@
         height: 120px;
     }
     .comment_left{
-        width: 230px;
+        width: 320px;
         height: 120px;
         float: left;
     }
@@ -1133,16 +1179,6 @@
         font-size: 24px;
         line-height: 40px;
     }
-    .comment_bottom{
-        height: 40px;
-        font-size: 24px;
-        color: #00c0eb;
-    }
-    .comment_bottom>span{
-        float: right;
-        margin-top: 6px;
-        display: inline-block;
-    }
     .user{
         width: 690px;
         margin: 0 auto;
@@ -1189,6 +1225,7 @@
     }
     .user_right{
         float: left;
+        width: 580px;
         margin-left: 20px;
     }
     .user_right>h4{
@@ -1335,7 +1372,7 @@
     }
     .consult_left{
         height: 80px;
-        width: 270px;
+        width: 500px;
         float: left;
     }
     .consult_left>img{
@@ -1466,13 +1503,18 @@
         margin-left: 14px;
         padding: 0 10px;
     }
-    .recommend_detail>p,.recommend_detail>h5{
+   .recommend_detail>h5{
         font-size: 24px;
         color: #b1b3b5;
         margin: 22px 0;
     }
     .recommend_detail>p{
         width: 400px;
+        font-size: 24px;
+        height: 38px;
+        line-height: 38px;
+        color: #b1b3b5;
+        margin: 15px 0;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

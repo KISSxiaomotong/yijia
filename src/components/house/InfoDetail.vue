@@ -1,31 +1,24 @@
 <template>
-    <div id="detail">
+    <div id="info_detail">
         <header>
             <div class="header">
                 <div @click="back()"></div>
-                <h2>行业咨询</h2>
+                <h2>基本信息</h2>
             </div>
         </header>
-        <div class="info">
-            <div class="title">
-                <h2>{{detail.title}}</h2>
-            </div>
-            <div class="middle">
-                <p>来源：{{detail.source}}</p><span>{{detail.cdate}}</span>
-            </div>
-            <div class="content" v-html="detail.details">
-            </div>
+        <div class="info_content" v-html="detail">
+
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "NewsDetail",
+        name: "InfoDetail",
         data(){
             return{
                 id:this.$route.query.id,
-                detail:{}
+                detail: {}
             }
         },
         methods:{
@@ -33,8 +26,9 @@
                 this.$router.go(-1);//返回上一层
             },
             fetchData: async function (){
-                let res = await this.post('industryInformation/selbyid',{"id":this.id});
-                this.detail = res.data.data;
+                let res = await this.post('properties/whole', {"id":this.id});
+                res = res.data.data;
+                this.detail = res.properties.details;
             }
         },
         mounted() {
@@ -44,7 +38,7 @@
 </script>
 
 <style scoped>
-    #detail{
+    #info_detail{
         width: 750px;
         background-color: #ffffff;
     }
@@ -74,51 +68,29 @@
         float: left;
         margin-left: 200px;
     }
-    .info{
+    .info_content{
         width: 690px;
         margin: 0 auto;
     }
-    .title{
-        width: 690px;
-        height: 100px;
-    }
-    .title>h2{
-        font-size: 36px;
+    .info_content >>> h2{
+        font-size: 38px;
+        height: 60px;
+        line-height: 60px;
         font-weight: bold;
-        height: 50px;
-        line-height: 50px;
-        margin-top: 40px;
     }
-    .middle{
-        width: 690px;
-        height: 50px;
-        line-height: 50px;
-        margin-top: 20px;
-    }
-    .middle>p{
+    .info_content >>> li{
         font-size: 24px;
-        color: #888888;
-        float: left;
+        line-height: 54px;
+        color: #999999;
     }
-    .middle>span{
-        display: block;
+    .info_content >>> p{
         font-size: 24px;
-        color: #888888;
-        float: left;
-        margin-left: 20px;
+        line-height: 54px;
+        color: #999999;
     }
-    .content{
-        width: 690px;
-        margin: 40px auto 0;
-    }
-    .content >>> img{
-        width: 690px;
-        height: 460px;
-        margin-bottom: 30px;
-    }
-    .content >>> p{
-        font-size: 26px;
-        color: #666666;
-        line-height: 70px;
+    .info_content >>> span{
+        font-size: 24px;
+        line-height: 54px;
+        color: #999999;
     }
 </style>

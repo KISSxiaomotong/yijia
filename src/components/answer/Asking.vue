@@ -82,8 +82,7 @@
     }
     .answer{
         width: 690px;
-        height: 320px;
-        margin: 0 auto;
+        margin: 0 auto 40px;
     }
     .ask{
         padding: 40px 0 0 60px;

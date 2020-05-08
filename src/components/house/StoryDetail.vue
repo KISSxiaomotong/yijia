@@ -11,7 +11,7 @@
                 <h2>{{detail.represent}}</h2>
             </div>
             <div class="middle">
-                <p>姓名：{{detail.mfName}}</p><span>{{detail.cdate}}</span>
+                <p>姓名：{{detail.mfName}}</p>
             </div>
             <div class="content" v-html="detail.story">
             </div>
@@ -142,5 +142,13 @@
         height: 30px;
         line-height: 30px;
         margin-top: 60px;
+    }
+    .content >>> img{
+        width: 690px;
+    }
+    .content >>> p{
+        font-size: 24px;
+        line-height: 40px;
+        color: #999999;
     }
 </style>

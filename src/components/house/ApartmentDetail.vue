@@ -17,8 +17,7 @@
                        <span>在售</span>
                    </div>
                     <ul>
-                        <li>别墅</li>
-                        <li>商圈</li>
+                        <li v-for="(item,index) in detail.label" :key="index">{{item}}</li>
                     </ul>
                 </div>
                 <table>
@@ -26,7 +25,7 @@
                         <td>参考总价：</td>
                         <td>{{detail.sumPrice}}</td>
                         <td>单价：</td>
-                        <td>{{detail.unitPrice}}元/m²</td>
+                        <td>{{detail.unitPrice}}/m²</td>
                     </tr>
                     <tr>
                         <td>建筑面积：</td>
@@ -43,8 +42,12 @@
                 </table>
             </div>
             <div class="content_detail">
-                <h2>居室详解</h2>
+                <h2>户型分析</h2>
+                <p>{{detail.analysis}}</p>
+                <h2>户型详解</h2>
                 <p>{{detail.details}}</p>
+                <h2>优势</h2>
+                <p>{{detail.advantage}}</p>
             </div>
         </div>
     </div>
@@ -65,7 +68,9 @@
             },
             fetchData: async function (){
                 let res = await this.post('houseShape/selbyid', {"id":this.id});
-                this.detail = res.data.data;
+                res = res.data.data;
+                res.label = res.label.split(",");
+                this.detail = res;
             }
         },
         mounted() {
@@ -148,7 +153,7 @@
     }
     .content_middle>table>tr{
         height: 50px;
-        font-size: 30px;
+        font-size: 26px;
         line-height: 50px;
     }
     .content_middle>table>tr>td:nth-child(2n+1){
@@ -158,12 +163,12 @@
         width: 180px;
     }
     .content_detail{
-        margin-top: 30px;
+        margin: 30px 0 60px;
     }
     .content_detail>h2{
         font-size: 36px;
         font-weight: bold;
-        margin-bottom: 30px;
+        margin: 30px 0;
     }
     .content_detail>p{
         font-size: 24px;
